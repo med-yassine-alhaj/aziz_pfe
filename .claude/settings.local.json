@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\medya\\\\F_MCOM\\\\backend\\\\app\\\\Http\\\\Controllers\\\\Api\" -Recurse | where-object {$_.PSIsContainer -eq $false} | Select-Object -ExpandProperty FullName | grep -i file)"
+    ]
+  }
+}

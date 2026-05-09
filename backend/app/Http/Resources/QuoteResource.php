@@ -19,6 +19,7 @@ class QuoteResource extends JsonResource
             'discount_amount'    => (float) $this->discount_amount,
             'tax_amount'         => (float) $this->tax_amount,
             'total'              => (float) $this->total,
+            'total_ttc'          => (float) $this->total,
             'status'             => $this->status,
             'status_label'       => $this->status_label,
             'notes'              => $this->notes,

@@ -93,7 +93,7 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar) {
-            return asset('storage/' . $this->avatar);
+            return '/storage/' . $this->avatar;
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7C3AED&background=F1EAFE';
     }

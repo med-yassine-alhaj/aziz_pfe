@@ -72,9 +72,15 @@ export default function AdminChat() {
                   {msg.is_internal_note && <span className="text-xs font-bold mb-1 block">🔒 Note interne</span>}
                   {msg.message && <p className="leading-relaxed">{msg.message}</p>}
                   {msg.attachment_url && (
-                    <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 mt-2 text-xs underline opacity-80">
-                      📎 {msg.attachment_name || 'Pièce jointe'}
-                    </a>
+                    /\.(jpg|jpeg|png|gif|webp)$/i.test(msg.attachment_name ?? '') ? (
+                      <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="block mt-2">
+                        <img src={msg.attachment_url} alt={msg.attachment_name} className="max-w-[220px] max-h-[180px] rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity" />
+                      </a>
+                    ) : (
+                      <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 mt-2 text-xs underline opacity-80">
+                        📎 {msg.attachment_name || 'Pièce jointe'}
+                      </a>
+                    )
                   )}
                 </div>
                 <p className={`text-xs text-gray-400 mt-1 ${isMe ? 'text-right' : 'text-left'}`}>{msg.created_at}</p>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Accountant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InvoiceResource;
+use App\Http\Resources\PaymentResource;
 use App\Models\Invoice;
 use App\Models\Payment;
 
@@ -35,8 +37,8 @@ class DashboardController extends Controller
             'revenue_this_month'  => $monthlyRevenue,
             'pending_validation'  => $pendingValidationCount,
             'pending_payments'    => $pendingPaymentsCount,
-            'latest_pending'      => $latestPending,
-            'latest_payments'     => $latestPayments,
+            'latest_pending'      => InvoiceResource::collection($latestPending),
+            'latest_payments'     => PaymentResource::collection($latestPayments),
         ]);
     }
 }

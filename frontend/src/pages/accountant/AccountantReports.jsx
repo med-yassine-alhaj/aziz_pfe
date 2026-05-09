@@ -27,18 +27,18 @@ export default function AccountantReports() {
       reportsApi.serviceRevenue(),
     ])
       .then(([r, c, s]) => {
-        const raw = r.data.data ?? r.data
+        const monthlyRaw = r.data.monthly_data ?? []
         const monthly = Array.from({ length: 12 }, (_, i) => {
-          const found = (Array.isArray(raw) ? raw : []).find(d => Number(d.month) === i + 1)
+          const found = monthlyRaw.find(d => Number(d.month) === i + 1)
           return {
             name: MONTHS_FR[i],
-            Revenus: Number(found?.total ?? 0),
+            Revenus: Number(found?.revenue ?? 0),
             Factures: Number(found?.count ?? 0),
           }
         })
         setRevenue(monthly)
-        setClients(c.data.data ?? c.data)
-        setServices(s.data.data ?? s.data)
+        setClients(c.data.client_revenue ?? [])
+        setServices(s.data.service_revenue ?? [])
       })
       .catch(() => toast.error('Erreur chargement rapports.'))
       .finally(() => setLoading(false))
@@ -162,9 +162,9 @@ export default function AccountantReports() {
                 <BarChart data={services} layout="vertical" margin={{ left: 80, right: 20, top: 5, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F1F0F5" horizontal={false} />
                   <XAxis type="number" tick={{ fill: '#9CA3AF', fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toLocaleString('fr-MA')}`} />
-                  <YAxis type="category" dataKey="name" tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} width={80} />
+                  <YAxis type="category" dataKey="service_name" tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} width={80} />
                   <Tooltip formatter={(v) => [`${Number(v).toLocaleString('fr-MA')} MAD`, 'Revenus']} contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                  <Bar dataKey="total_revenue" fill="#7C3AED" radius={[0, 6, 6, 0]} name="Revenus" />
+                  <Bar dataKey="revenue" fill="#7C3AED" radius={[0, 6, 6, 0]} name="Revenus" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

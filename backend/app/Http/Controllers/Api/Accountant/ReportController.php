@@ -26,10 +26,10 @@ class ReportController extends Controller
         for ($m = 1; $m <= 12; $m++) {
             $data[] = [
                 'month'   => $m,
-                'label'   => now()->month($m)->translatedFormat('F'),
-                'revenue' => $monthly[$m]->revenue ?? 0,
-                'tax'     => $monthly[$m]->tax ?? 0,
-                'count'   => $monthly[$m]->count ?? 0,
+                'label'   => now()->month($m)->format('F'),
+                'revenue' => (float) ($monthly[$m]->revenue ?? 0),
+                'tax'     => (float) ($monthly[$m]->tax ?? 0),
+                'count'   => (int) ($monthly[$m]->count ?? 0),
             ];
         }
 
@@ -72,7 +72,7 @@ class ReportController extends Controller
 
     public function serviceRevenue()
     {
-        $data = Invoice::where('status', 'paid')
+        $data = Invoice::where('invoices.status', 'paid')
             ->join('service_requests', 'invoices.service_request_id', '=', 'service_requests.id')
             ->join('services', 'service_requests.service_id', '=', 'services.id')
             ->selectRaw('services.name as service_name, COUNT(*) as count, SUM(invoices.total) as revenue')

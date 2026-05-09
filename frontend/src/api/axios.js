@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: '/api',
   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 })
 
-// Ensure Authorization header is available immediately when the module loads
 const initialToken = localStorage.getItem('fmcom_token')
 if (initialToken) {
   api.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`
@@ -20,10 +19,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    const isLoginRequest = err.config?.url?.endsWith('/login')
+    if (err.response?.status === 401 && !isLoginRequest) {
       localStorage.removeItem('fmcom_token')
       localStorage.removeItem('fmcom_user')
-      window.location.href = '/login'
+      const isAdmin = window.location.pathname.startsWith('/admin')
+      window.location.href = isAdmin ? '/admin/login' : '/login'
     }
     return Promise.reject(err)
   }
