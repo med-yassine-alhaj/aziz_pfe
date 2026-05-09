@@ -17,6 +17,8 @@ import Contact from './pages/public/Contact'
 import Login from './pages/public/Login'
 import Register from './pages/public/Register'
 import GoogleCallback from './pages/public/GoogleCallback'
+import AdminLogin from './pages/admin/AdminLogin'
+import AccountantLogin from './pages/accountant/AccountantLogin'
 
 // Client pages
 import ClientDashboard from './pages/client/ClientDashboard'
@@ -51,6 +53,47 @@ import AccountantPayments from './pages/accountant/AccountantPayments'
 import AccountantReports from './pages/accountant/AccountantReports'
 
 export default function App() {
+  const isAdminPortal = import.meta.env.VITE_APP_PORTAL === 'admin'
+
+  if (isAdminPortal) {
+    return (
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Navigate to="/admin/login" replace />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/accountant/login" element={<AccountantLogin />} />
+
+          <Route path="admin" element={<ProtectedRoute role="admin" loginPath="/admin/login"><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="packs" element={<AdminPacks />} />
+            <Route path="requests" element={<AdminRequests />} />
+            <Route path="requests/:id" element={<AdminRequestDetails />} />
+            <Route path="requests/:id/chat" element={<AdminChat />} />
+            <Route path="quotes" element={<AdminQuotes />} />
+            <Route path="quotes/create" element={<CreateQuote />} />
+            <Route path="quotes/:id/edit" element={<CreateQuote />} />
+            <Route path="invoices" element={<AdminInvoices />} />
+            <Route path="clients" element={<AdminClients />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+
+          <Route path="accountant" element={<ProtectedRoute role="accountant" loginPath="/accountant/login"><AccountantLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AccountantDashboard />} />
+            <Route path="invoices" element={<AccountantInvoices />} />
+            <Route path="invoices/:id" element={<AccountantInvoiceDetails />} />
+            <Route path="payments" element={<AccountantPayments />} />
+            <Route path="reports" element={<AccountantReports />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/admin/login" replace />} />
+        </Routes>
+      </AuthProvider>
+    )
+  }
+
   return (
     <AuthProvider>
       <Routes>
@@ -82,7 +125,8 @@ export default function App() {
         </Route>
 
         {/* ADMIN */}
-        <Route path="admin" element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
+        <Route path="admin/login" element={<AdminLogin />} />
+        <Route path="admin" element={<ProtectedRoute role="admin" loginPath="/admin/login"><AdminLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="services" element={<AdminServices />} />
@@ -99,7 +143,8 @@ export default function App() {
         </Route>
 
         {/* ACCOUNTANT */}
-        <Route path="accountant" element={<ProtectedRoute role="accountant"><AccountantLayout /></ProtectedRoute>}>
+        <Route path="accountant/login" element={<AccountantLogin />} />
+        <Route path="accountant" element={<ProtectedRoute role="accountant" loginPath="/accountant/login"><AccountantLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AccountantDashboard />} />
           <Route path="invoices" element={<AccountantInvoices />} />

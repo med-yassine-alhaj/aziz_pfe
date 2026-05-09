@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // ─── AUTH PUBLIC ─────────────────────────────────────────────────────────────
 Route::post('/register', RegisterController::class);
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
@@ -137,7 +137,7 @@ Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
 
         Route::get('/invoices', [Accountant\InvoiceController::class, 'index']);
         Route::get('/invoices/{invoice}', [Accountant\InvoiceController::class, 'show']);
-        Route::post('/invoices/{invoice}/validate', [Accountant\InvoiceController::class, 'validate']);
+        Route::post('/invoices/{invoice}/validate', [Accountant\InvoiceController::class, 'validateInvoice']);
         Route::post('/invoices/{invoice}/cancel', [Accountant\InvoiceController::class, 'cancel']);
         Route::get('/invoices/{invoice}/download', [Accountant\InvoiceController::class, 'download']);
         Route::get('/invoices/export/csv', [Accountant\InvoiceController::class, 'export']);

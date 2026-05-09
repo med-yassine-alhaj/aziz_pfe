@@ -12,22 +12,31 @@ class DashboardController extends Controller
     {
         $currentMonth = now()->startOfMonth();
 
+        $totalRevenue = Invoice::where('status', 'paid')->sum('total');
+        $monthlyRevenue = Invoice::where('status', 'paid')->where('paid_at', '>=', $currentMonth)->sum('total');
+
+        $pendingPaymentsCount = Payment::where('status', 'pending')->count();
+        $pendingValidationCount = Invoice::where('status', 'waiting_accountant_validation')->count();
+
+        $latestPending = Invoice::with(['service_request.client'])
+            ->where('status', 'waiting_accountant_validation')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $latestPayments = Payment::with(['client', 'invoice.service_request'])
+            ->where('status', 'pending')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return response()->json([
-            'stats' => [
-                'total_revenue'          => Invoice::where('status', 'paid')->sum('total'),
-                'monthly_revenue'        => Invoice::where('status', 'paid')->where('paid_at', '>=', $currentMonth)->sum('total'),
-                'unpaid_invoices'        => Invoice::where('status', 'unpaid')->count(),
-                'unpaid_amount'          => Invoice::where('status', 'unpaid')->sum('total'),
-                'payments_to_validate'   => Payment::where('status', 'pending')->count(),
-                'total_tax_collected'    => Invoice::where('status', 'paid')->sum('tax_amount'),
-                'invoices_to_validate'   => Invoice::where('status', 'waiting_accountant_validation')->count(),
-                'paid_invoices'          => Invoice::where('status', 'paid')->count(),
-            ],
-            'recent_payments' => Payment::with(['client', 'invoice'])
-                ->where('status', 'pending')
-                ->latest()
-                ->take(5)
-                ->get(),
+            'total_revenue'       => $totalRevenue,
+            'revenue_this_month'  => $monthlyRevenue,
+            'pending_validation'  => $pendingValidationCount,
+            'pending_payments'    => $pendingPaymentsCount,
+            'latest_pending'      => $latestPending,
+            'latest_payments'     => $latestPayments,
         ]);
     }
 }

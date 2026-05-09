@@ -9,6 +9,8 @@ export default function QuoteDetails() {
   const navigate  = useNavigate()
   const [quote, setQuote] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [accepting, setAccepting] = useState(false)
+  const [refusing, setRefusing] = useState(false)
 
   useEffect(() => {
     quotesApi.clientGetOne(id)
@@ -18,20 +20,31 @@ export default function QuoteDetails() {
 
   const handleAccept = async () => {
     if (!confirm('Accepter ce devis ?')) return
+    setAccepting(true)
     try {
-      await quotesApi.clientAccept(id)
-      toast.success('Devis accepté ! Une facture sera générée.')
-      setQuote(prev => ({ ...prev, status: 'accepted' }))
-    } catch { toast.error('Erreur.') }
+      const response = await quotesApi.clientAccept(id)
+      toast.success('Devis accepté ! Redirection vers la facture...')
+      // Redirect to invoice after 1 second
+      setTimeout(() => {
+        navigate(`/client/invoices/${response.data.invoice_id}`)
+      }, 1000)
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Erreur lors de l\'acceptation.')
+      setAccepting(false)
+    }
   }
 
   const handleRefuse = async () => {
     if (!confirm('Refuser ce devis ?')) return
+    setRefusing(true)
     try {
       await quotesApi.clientRefuse(id)
       toast.success('Devis refusé.')
       setQuote(prev => ({ ...prev, status: 'refused' }))
-    } catch { toast.error('Erreur.') }
+    } catch { 
+      toast.error('Erreur.')
+      setRefusing(false)
+    }
   }
 
   const downloadPdf = async () => {
@@ -121,16 +134,28 @@ export default function QuoteDetails() {
         <div className="bg-yellow-50 border-2 border-yellow-200 rounded-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="font-bold text-dark">Ce devis attend votre réponse</h3>
-            <p className="text-sm text-gray-600 mt-1">Prenez le temps de le lire avant de répondre.</p>
+            <p className="text-sm text-gray-600 mt-1">Acceptez ce devis pour continuer vers le paiement de votre facture.</p>
           </div>
           <div className="flex gap-3">
-            <button onClick={handleAccept} className="bg-green-500 text-white font-bold px-6 py-2.5 rounded-btn hover:bg-green-600 transition-all">
-              ✓ Accepter
+            <button onClick={handleAccept} disabled={accepting} className="bg-green-500 text-white font-bold px-6 py-2.5 rounded-btn hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              {accepting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Acceptation...</> : <>✓ Accepter</>}
             </button>
-            <button onClick={handleRefuse} className="bg-red-100 text-red-600 font-bold px-6 py-2.5 rounded-btn hover:bg-red-200 transition-all">
-              ✕ Refuser
+            <button onClick={handleRefuse} disabled={refusing} className="bg-red-100 text-red-600 font-bold px-6 py-2.5 rounded-btn hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              {refusing ? 'Refus...' : '✕ Refuser'}
             </button>
           </div>
+        </div>
+      )}
+
+      {quote.status === 'accepted' && (
+        <div className="bg-green-50 border-2 border-green-200 rounded-card p-6">
+          <p className="text-sm text-green-700">✓ Ce devis a été accepté et une facture a été créée.</p>
+        </div>
+      )}
+
+      {quote.status === 'refused' && (
+        <div className="bg-red-50 border-2 border-red-200 rounded-card p-6">
+          <p className="text-sm text-red-700">✕ Ce devis a été refusé.</p>
         </div>
       )}
 

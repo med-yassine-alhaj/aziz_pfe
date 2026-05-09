@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\QuoteResource;
 use App\Models\ActivityLog;
 use App\Models\AppNotification;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Quote;
+use App\Models\User;
 use App\Services\PdfService;
 
 class QuoteController extends Controller
@@ -47,7 +50,62 @@ class QuoteController extends Controller
 
         ActivityLog::record('accepted', 'Quote', $quote->id, 'Devis accepté : ' . $quote->quote_number);
 
-        return response()->json(['message' => 'Devis accepté avec succès.', 'quote' => new QuoteResource($quote)]);
+        // Auto-convert to invoice
+        $invoice = Invoice::create([
+            'client_id'          => $quote->client_id,
+            'service_request_id' => $quote->service_request_id,
+            'quote_id'           => $quote->id,
+            'subtotal'           => $quote->subtotal,
+            'discount_amount'    => $quote->discount_amount,
+            'tax_amount'         => $quote->tax_amount,
+            'total'              => $quote->total,
+            'status'             => 'waiting_accountant_validation',
+            'notes'              => $quote->notes,
+            'created_by'         => auth()->id(),
+        ]);
+
+        foreach ($quote->items as $item) {
+            InvoiceItem::create([
+                'invoice_id'      => $invoice->id,
+                'title'           => $item->title,
+                'description'     => $item->description,
+                'quantity'        => $item->quantity,
+                'unit_price'      => $item->unit_price,
+                'tax_rate'        => $item->tax_rate,
+                'discount_amount' => $item->discount_amount,
+                'order'           => $item->order,
+            ]);
+        }
+
+        $quote->serviceRequest->update(['status' => 'invoice_generated']);
+
+        // Notify client about invoice
+        AppNotification::create([
+            'user_id' => $quote->client_id,
+            'title'   => 'Facture générée',
+            'message' => 'Votre devis a été accepté. Une facture a été créée : ' . $invoice->invoice_number,
+            'type'    => 'invoice_generated',
+            'link'    => '/client/invoices/' . $invoice->id,
+        ]);
+
+        // Notify accountants
+        User::accountants()->each(function ($accountant) use ($invoice) {
+            AppNotification::create([
+                'user_id' => $accountant->id,
+                'title'   => 'Facture à valider',
+                'message' => 'La facture ' . $invoice->invoice_number . ' attend votre validation.',
+                'type'    => 'invoice_to_validate',
+                'link'    => '/accountant/invoices/' . $invoice->id,
+            ]);
+        });
+
+        ActivityLog::record('created', 'Invoice', $invoice->id, 'Facture créée automatiquement depuis devis accepté : ' . $quote->quote_number);
+
+        return response()->json([
+            'message' => 'Devis accepté et facture générée avec succès.',
+            'invoice_id' => $invoice->id,
+            'invoice_number' => $invoice->invoice_number,
+        ]);
     }
 
     public function refuse(Quote $quote)

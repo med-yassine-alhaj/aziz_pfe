@@ -1,10 +1,15 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'http://127.0.0.1:8000/api',
   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-  withCredentials: true,
 })
+
+// Ensure Authorization header is available immediately when the module loads
+const initialToken = localStorage.getItem('fmcom_token')
+if (initialToken) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`
+}
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('fmcom_token')

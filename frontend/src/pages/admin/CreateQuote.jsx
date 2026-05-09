@@ -17,28 +17,34 @@ export default function CreateQuote() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const requestId = params.get('request_id')
+  const clientIdFromQuery = params.get('client_id')
 
   const [request, setRequest] = useState(null)
-  const [items, setItems]     = useState([{ ...emptyItem }])
-  const [notes, setNotes]     = useState('')
+  const [clientId, setClientId] = useState(clientIdFromQuery)
+  const [items, setItems] = useState([{ ...emptyItem }])
+  const [notes, setNotes] = useState('')
   const [validUntil, setValidUntil] = useState('')
-  const [saving, setSaving]   = useState(false)
+  const [saving, setSaving] = useState(false)
   const [loadingReq, setLoadingReq] = useState(!!requestId)
 
   useEffect(() => {
     if (!requestId) return
     requestsApi.adminGetOne(requestId)
-      .then(({ data }) => setRequest(data.data ?? data))
+      .then(({ data }) => {
+        const payload = data.data ?? data
+        setRequest(payload)
+        setClientId(payload.client?.id ?? clientIdFromQuery)
+      })
       .catch(() => toast.error('Demande introuvable.'))
       .finally(() => setLoadingReq(false))
-  }, [requestId])
+  }, [requestId, clientIdFromQuery])
 
-  const addItem = () => setItems(p => [...p, { ...emptyItem }])
+  const addItem = () => setItems(prev => [...prev, { ...emptyItem }])
 
-  const removeItem = (i) => setItems(p => p.filter((_, idx) => idx !== i))
+  const removeItem = (index) => setItems(prev => prev.filter((_, idx) => idx !== index))
 
-  const updateItem = (i, field, value) => {
-    setItems(p => p.map((item, idx) => idx === i ? { ...item, [field]: value } : item))
+  const updateItem = (index, field, value) => {
+    setItems(prev => prev.map((item, idx) => idx === index ? { ...item, [field]: value } : item))
   }
 
   const totals = items.reduce((acc, item) => {
@@ -46,33 +52,50 @@ export default function CreateQuote() {
     return { ht: acc.ht + c.ht, tva: acc.tva + c.tva, ttc: acc.ttc + c.ttc }
   }, { ht: 0, tva: 0, ttc: 0 })
 
+  const createQuotePayload = () => ({
+    service_request_id: requestId,
+    client_id: clientId,
+    notes,
+    valid_until: validUntil || null,
+    items: items.map(item => ({
+      title: item.description,
+      description: item.description,
+      quantity: Number(item.quantity),
+      unit_price: Number(item.unit_price),
+      tax_rate: Number(item.tax_rate),
+      discount_amount: Number(item.discount_amount),
+    })),
+  })
+
   const submit = async (asDraft = true) => {
-    const invalid = items.some(it => !it.description.trim() || !it.unit_price)
+    const invalid = items.some(item => !item.description.trim() || !item.unit_price)
     if (invalid) return toast.error('Remplissez toutes les lignes (description + prix).')
     if (!requestId) return toast.error('Demande de service manquante.')
+    if (!clientId) return toast.error('Client manquant.')
+
     setSaving(true)
     try {
-      await quotesApi.adminCreate({
-        service_request_id: requestId,
-        notes,
-        valid_until: validUntil || null,
-        status: asDraft ? 'draft' : 'sent',
-        items: items.map(it => ({
-          description: it.description,
-          quantity: Number(it.quantity),
-          unit_price: Number(it.unit_price),
-          tax_rate: Number(it.tax_rate),
-          discount_amount: Number(it.discount_amount),
-        }))
-      })
-      toast.success(asDraft ? 'Devis sauvegardé en brouillon.' : 'Devis envoyé au client.')
+      const { data } = await quotesApi.adminCreate(createQuotePayload())
+      const created = data.data ?? data
+
+      if (!asDraft) {
+        await quotesApi.adminSend(created.id)
+        toast.success('Devis envoyé au client.')
+      } else {
+        toast.success('Devis sauvegardé en brouillon.')
+      }
+
       navigate('/admin/quotes')
     } catch (e) {
       toast.error(e.response?.data?.message ?? 'Erreur.')
-    } finally { setSaving(false) }
+    } finally {
+      setSaving(false)
+    }
   }
 
-  if (loadingReq) return <div className="flex justify-center pt-20"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>
+  if (loadingReq) {
+    return <div className="flex justify-center pt-20"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -86,7 +109,6 @@ export default function CreateQuote() {
         </div>
       </div>
 
-      {/* Client & request info */}
       {request && (
         <div className="card p-5 bg-primary/5 border border-primary/20">
           <div className="flex items-center gap-3">
@@ -103,7 +125,6 @@ export default function CreateQuote() {
         </div>
       )}
 
-      {/* Meta */}
       <div className="card p-5">
         <h2 className="font-semibold text-dark mb-4">Informations</h2>
         <div className="grid grid-cols-2 gap-4">
@@ -118,11 +139,9 @@ export default function CreateQuote() {
         </div>
       </div>
 
-      {/* Items */}
       <div className="card p-5">
         <h2 className="font-semibold text-dark mb-4">Lignes du devis</h2>
         <div className="space-y-3">
-          {/* Header */}
           <div className="grid grid-cols-12 gap-2 text-xs font-medium text-gray-400 px-1">
             <div className="col-span-4">Description</div>
             <div className="col-span-1">Qté</div>
@@ -133,31 +152,36 @@ export default function CreateQuote() {
             <div className="col-span-1" />
           </div>
 
-          {items.map((item, i) => {
+          {items.map((item, index) => {
             const c = calcItem(item)
             return (
-              <div key={i} className="grid grid-cols-12 gap-2 items-center bg-surface rounded-xl p-3">
+              <div key={index} className="grid grid-cols-12 gap-2 items-center bg-surface rounded-xl p-3">
                 <div className="col-span-4">
-                  <input className="input text-sm py-2" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder="Description de la prestation" />
+                  <input
+                    className="input text-sm py-2"
+                    value={item.description}
+                    onChange={e => updateItem(index, 'description', e.target.value)}
+                    placeholder="Description de la prestation"
+                  />
                 </div>
                 <div className="col-span-1">
-                  <input type="number" min="1" className="input text-sm py-2 text-center" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)} />
+                  <input type="number" min="1" className="input text-sm py-2 text-center" value={item.quantity} onChange={e => updateItem(index, 'quantity', e.target.value)} />
                 </div>
                 <div className="col-span-2">
-                  <input type="number" min="0" step="0.01" className="input text-sm py-2" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', e.target.value)} placeholder="0.00" />
+                  <input type="number" min="0" step="0.01" className="input text-sm py-2" value={item.unit_price} onChange={e => updateItem(index, 'unit_price', e.target.value)} placeholder="0.00" />
                 </div>
                 <div className="col-span-1">
-                  <input type="number" min="0" max="100" className="input text-sm py-2 text-center" value={item.tax_rate} onChange={e => updateItem(i, 'tax_rate', e.target.value)} />
+                  <input type="number" min="0" max="100" className="input text-sm py-2 text-center" value={item.tax_rate} onChange={e => updateItem(index, 'tax_rate', e.target.value)} />
                 </div>
                 <div className="col-span-1">
-                  <input type="number" min="0" step="0.01" className="input text-sm py-2" value={item.discount_amount} onChange={e => updateItem(i, 'discount_amount', e.target.value)} />
+                  <input type="number" min="0" step="0.01" className="input text-sm py-2" value={item.discount_amount} onChange={e => updateItem(index, 'discount_amount', e.target.value)} />
                 </div>
                 <div className="col-span-2 text-right">
                   <span className="text-sm font-bold text-dark">{c.ttc.toLocaleString('fr-MA', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="col-span-1 flex justify-center">
                   {items.length > 1 && (
-                    <button onClick={() => removeItem(i)} className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    <button onClick={() => removeItem(index)} className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   )}
@@ -172,7 +196,6 @@ export default function CreateQuote() {
           </button>
         </div>
 
-        {/* Totals */}
         <div className="mt-6 border-t border-gray-100 pt-4 flex justify-end">
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm text-gray-600">
@@ -191,7 +214,6 @@ export default function CreateQuote() {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex gap-3 justify-end">
         <button onClick={() => navigate(-1)} className="btn-outline">Annuler</button>
         <button onClick={() => submit(true)} disabled={saving} className="btn-outline disabled:opacity-50">

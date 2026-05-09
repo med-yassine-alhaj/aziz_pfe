@@ -18,6 +18,7 @@ class ServiceController extends Controller
     public function store(ServiceFormRequest $request)
     {
         $data = $request->validated();
+        $data['description'] = $data['description'] ?? '';
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('services', 'public');

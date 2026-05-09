@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import StatusBadge from '../../components/StatusBadge'
 import { quotesApi } from '../../api/quotesApi'
 import toast from 'react-hot-toast'
 
 export default function ClientQuotes() {
+  const navigate = useNavigate()
   const [quotes, setQuotes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [processing, setProcessing] = useState(null)
 
   useEffect(() => {
     quotesApi.clientGetAll()
@@ -16,20 +18,31 @@ export default function ClientQuotes() {
 
   const handleAccept = async (id) => {
     if (!confirm('Accepter ce devis ?')) return
+    setProcessing(id)
     try {
-      await quotesApi.clientAccept(id)
-      toast.success('Devis accepté !')
-      setQuotes(prev => prev.map(q => q.id === id ? { ...q, status: 'accepted' } : q))
-    } catch { toast.error('Erreur.') }
+      const response = await quotesApi.clientAccept(id)
+      toast.success('Devis accepté ! Redirection...')
+      setTimeout(() => {
+        navigate(`/client/invoices/${response.data.invoice_id}`)
+      }, 800)
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Erreur.')
+      setProcessing(null)
+    }
   }
 
   const handleRefuse = async (id) => {
     if (!confirm('Refuser ce devis ?')) return
+    setProcessing(id)
     try {
       await quotesApi.clientRefuse(id)
       toast.success('Devis refusé.')
       setQuotes(prev => prev.map(q => q.id === id ? { ...q, status: 'refused' } : q))
-    } catch { toast.error('Erreur.') }
+      setProcessing(null)
+    } catch { 
+      toast.error('Erreur.')
+      setProcessing(null)
+    }
   }
 
   const downloadPdf = async (quote) => {
@@ -72,10 +85,19 @@ export default function ClientQuotes() {
                 <div className="flex flex-wrap items-center gap-2">
                   {q.status === 'sent' && (
                     <>
-                      <button onClick={() => handleAccept(q.id)} className="bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition-all">
-                        ✓ Accepter
+                      <button 
+                        onClick={() => handleAccept(q.id)} 
+                        disabled={processing === q.id}
+                        className="bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                      >
+                        {processing === q.id ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : '✓'}
+                        {processing === q.id ? 'En cours...' : 'Accepter'}
                       </button>
-                      <button onClick={() => handleRefuse(q.id)} className="bg-red-100 text-red-600 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-200 transition-all">
+                      <button 
+                        onClick={() => handleRefuse(q.id)}
+                        disabled={processing === q.id}
+                        className="bg-red-100 text-red-600 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         ✕ Refuser
                       </button>
                     </>

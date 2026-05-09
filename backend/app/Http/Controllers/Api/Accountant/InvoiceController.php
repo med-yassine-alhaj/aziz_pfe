@@ -33,7 +33,7 @@ class InvoiceController extends Controller
         );
     }
 
-    public function validate(Invoice $invoice)
+    public function validateInvoice(Invoice $invoice)
     {
         if ($invoice->status !== 'waiting_accountant_validation') {
             return response()->json(['message' => 'Cette facture ne peut pas être validée.'], 422);

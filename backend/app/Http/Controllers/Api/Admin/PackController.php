@@ -19,13 +19,15 @@ class PackController extends Controller
     {
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:100', 'unique:packs,name'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'badge_label' => ['nullable', 'string', 'max:50'],
             'is_active'   => ['boolean'],
             'order'       => ['nullable', 'integer'],
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['exists:services,id'],
         ]);
+
+        $data['description'] = $data['description'] ?? '';
 
         $pack = Pack::create([
             ...$data,
@@ -43,7 +45,7 @@ class PackController extends Controller
     {
         $data = $request->validate([
             'name'        => ['sometimes', 'string', 'max:100'],
-            'description' => ['sometimes', 'string'],
+            'description' => ['sometimes', 'nullable', 'string'],
             'badge_label' => ['nullable', 'string', 'max:50'],
             'is_active'   => ['boolean'],
             'order'       => ['nullable', 'integer'],
