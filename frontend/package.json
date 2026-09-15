@@ -4,8 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:admin": "vite --port 3001 --mode admin",
+    "dev": "vite --port 3000 --mode client",
+    "dev:client": "vite --port 3000 --mode client",
+    "dev:admin": "vite --port 3002 --mode admin",
+    "dev:accountant": "vite --port 3001 --mode accountant",
     "build": "vite build",
     "preview": "vite preview"
   },

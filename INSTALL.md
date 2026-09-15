@@ -60,6 +60,14 @@ npx tailwindcss init -p
 npm run dev
 ```
 
+Pour lancer chaque portail séparément, ouvrez un terminal dans `frontend/` :
+
+```bash
+npm run dev              # Client : http://localhost:3000
+npm run dev:accountant   # Comptable : http://localhost:3001 
+npm run dev:admin        # Admin : http://localhost:3002
+```
+
 ## 3. Variables d'environnement backend (.env)
 
 ```

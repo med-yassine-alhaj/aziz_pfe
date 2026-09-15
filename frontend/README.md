@@ -14,6 +14,8 @@ This app now uses token-based Bearer auth only. No CSRF cookie call is needed fo
 
 Admin portal:
 - Run the same frontend on a separate port with `npm run dev:admin`.
-- Open the admin login on port `3001`.
+- Open the admin login on port `3002`.
+- Start the accountant portal with `npm run dev:accountant` on port `3001`.
+- Start the client portal with `npm run dev` on port `3000`.
 - Existing seeded admin account: `admin@fmcom.ma` / `Admin@2024`.
-- Backend CORS now allows both `http://localhost:3000` and `http://localhost:3001`.
+- Backend CORS allows `http://localhost:3000`, `http://localhost:3001`, and `http://localhost:3002`.

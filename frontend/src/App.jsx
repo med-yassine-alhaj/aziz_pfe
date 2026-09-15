@@ -53,13 +53,15 @@ import AccountantPayments from './pages/accountant/AccountantPayments'
 import AccountantReports from './pages/accountant/AccountantReports'
 
 export default function App() {
-  const isAdminPortal = import.meta.env.VITE_APP_PORTAL === 'admin'
+  const portal = import.meta.env.VITE_APP_PORTAL
+  const isStaffPortal = portal === 'admin' || portal === 'accountant'
+  const staffLoginPath = portal === 'accountant' ? '/accountant/login' : '/admin/login'
 
-  if (isAdminPortal) {
+  if (isStaffPortal) {
     return (
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/admin/login" replace />} />
+          <Route path="/" element={<Navigate to={staffLoginPath} replace />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/accountant/login" element={<AccountantLogin />} />
 
@@ -88,7 +90,7 @@ export default function App() {
             <Route path="reports" element={<AccountantReports />} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/admin/login" replace />} />
+          <Route path="*" element={<Navigate to={staffLoginPath} replace />} />
         </Routes>
       </AuthProvider>
     )
@@ -124,34 +126,9 @@ export default function App() {
           <Route path="profile" element={<ClientProfile />} />
         </Route>
 
-        {/* ADMIN */}
-        <Route path="admin/login" element={<AdminLogin />} />
-        <Route path="admin" element={<ProtectedRoute role="admin" loginPath="/admin/login"><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="services" element={<AdminServices />} />
-          <Route path="packs" element={<AdminPacks />} />
-          <Route path="requests" element={<AdminRequests />} />
-          <Route path="requests/:id" element={<AdminRequestDetails />} />
-          <Route path="requests/:id/chat" element={<AdminChat />} />
-          <Route path="quotes" element={<AdminQuotes />} />
-          <Route path="quotes/create" element={<CreateQuote />} />
-          <Route path="quotes/:id/edit" element={<CreateQuote />} />
-          <Route path="invoices" element={<AdminInvoices />} />
-          <Route path="clients" element={<AdminClients />} />
-          <Route path="settings" element={<AdminSettings />} />
-        </Route>
-
-        {/* ACCOUNTANT */}
-        <Route path="accountant/login" element={<AccountantLogin />} />
-        <Route path="accountant" element={<ProtectedRoute role="accountant" loginPath="/accountant/login"><AccountantLayout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<AccountantDashboard />} />
-          <Route path="invoices" element={<AccountantInvoices />} />
-          <Route path="invoices/:id" element={<AccountantInvoiceDetails />} />
-          <Route path="payments" element={<AccountantPayments />} />
-          <Route path="reports" element={<AccountantReports />} />
-        </Route>
+        {/* STAFF PORTALS ARE AVAILABLE ONLY ON THEIR DEDICATED PORTS */}
+        <Route path="admin/*" element={<Navigate to="/" replace />} />
+        <Route path="accountant/*" element={<Navigate to="/" replace />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
