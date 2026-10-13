@@ -24,18 +24,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-sm">F</span>
-            </div>
-            <span className="text-white font-bold text-xl tracking-tight">F_MCOM</span>
+            <img src="/engineerium-logo.png" alt="ENGINEERIUM" className="w-10 h-10 object-contain" />
+            <span className="text-white font-bold text-xl tracking-tight">ENGINEERIUM</span>
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
             {[
               { to: '/',        label: 'Accueil' },
-              { to: '/services', label: 'Services' },
-              { to: '/packs',   label: 'Packs' },
+              { to: '/services', label: 'Prestations' },
+              { to: '/packs',   label: 'Missions d’études' },
               { to: '/about',   label: 'À propos' },
               { to: '/contact', label: 'Contact' },
             ].map(({ to, label }) => (
@@ -105,8 +103,8 @@ export default function Navbar() {
           <div className="md:hidden pb-4 space-y-1">
             {[
               { to: '/',        label: 'Accueil' },
-              { to: '/services', label: 'Services' },
-              { to: '/packs',   label: 'Packs' },
+              { to: '/services', label: 'Prestations' },
+              { to: '/packs',   label: 'Missions d’études' },
               { to: '/about',   label: 'À propos' },
               { to: '/contact', label: 'Contact' },
             ].map(({ to, label }) => (

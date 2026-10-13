@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\PublicPackController;
 use App\Http\Controllers\Api\PublicServiceController;
+use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\Client;
 use App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Api\Accountant;
@@ -21,6 +23,7 @@ Route::get('/services', [PublicServiceController::class, 'index']);
 Route::get('/services/{service}', [PublicServiceController::class, 'show']);
 Route::get('/packs', [PublicPackController::class, 'index']);
 Route::get('/packs/{pack}', [PublicPackController::class, 'show']);
+Route::post('/contact', [ContactController::class, 'store']);
 
 // ─── AUTHENTICATED ───────────────────────────────────────────────────────────
 Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
@@ -47,6 +50,9 @@ Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
         Route::get('/requests', [Client\ServiceRequestController::class, 'index']);
         Route::post('/requests', [Client\ServiceRequestController::class, 'store']);
         Route::get('/requests/{serviceRequest}', [Client\ServiceRequestController::class, 'show']);
+        Route::get('/projects', [ProjectController::class, 'index']);
+        Route::get('/projects/{project}', [ProjectController::class, 'show']);
+        Route::get('/projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument']);
 
         Route::get('/requests/{serviceRequest}/chat', [Client\ChatController::class, 'show']);
         Route::post('/requests/{serviceRequest}/chat', [Client\ChatController::class, 'sendMessage']);
@@ -129,6 +135,20 @@ Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
         Route::get('/admins', fn() => \App\Http\Resources\UserResource::collection(
             \App\Models\User::admins()->get()
         ));
+        Route::get('/projects', [ProjectController::class, 'index']);
+        Route::get('/projects/{project}', [ProjectController::class, 'show']);
+        Route::put('/projects/{project}/stage', [ProjectController::class, 'updateStage']);
+        Route::put('/projects/{project}/assign-engineer', [ProjectController::class, 'assignEngineer']);
+        Route::post('/projects/{project}/documents', [ProjectController::class, 'storeDocument']);
+        Route::get('/projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument']);
+    });
+
+    Route::middleware('role.engineer')->prefix('engineer')->group(function () {
+        Route::get('/projects', [ProjectController::class, 'index']);
+        Route::get('/projects/{project}', [ProjectController::class, 'show']);
+        Route::put('/projects/{project}/stage', [ProjectController::class, 'updateStage']);
+        Route::post('/projects/{project}/documents', [ProjectController::class, 'storeDocument']);
+        Route::get('/projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument']);
     });
 
     // ─── ACCOUNTANT ──────────────────────────────────────────────────────────

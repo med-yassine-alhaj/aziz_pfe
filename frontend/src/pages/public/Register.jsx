@@ -34,11 +34,9 @@ export default function Register() {
       <div className="w-full max-w-lg">
         <div className="bg-white rounded-card shadow-card p-8">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-primary">F</span>
-            </div>
+            <img src="/engineerium-logo.png" alt="ENGINEERIUM" className="w-24 h-16 object-contain mx-auto mb-4" />
             <h1 className="text-2xl font-extrabold text-dark">Créer un compte</h1>
-            <p className="text-gray-500 text-sm mt-1">Rejoignez F_MCOM gratuitement</p>
+            <p className="text-gray-500 text-sm mt-1">Rejoignez ENGINEERIUM SARL</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -57,7 +55,7 @@ export default function Register() {
                 <label className="block text-sm font-medium text-dark mb-1.5">Téléphone</label>
                 <input
                   className="input"
-                  placeholder="+212 6XX-XXXXXX"
+                  placeholder="+216 XX XXX XXX"
                   {...register('phone')}
                 />
               </div>
@@ -68,7 +66,7 @@ export default function Register() {
               <input
                 type="email"
                 className="input"
-                placeholder="votre@email.ma"
+                placeholder="votre@email.tn"
                 {...register('email', { required: 'Email requis', pattern: { value: /\S+@\S+\.\S+/, message: 'Email invalide' } })}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}

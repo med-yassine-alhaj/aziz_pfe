@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `fmcom`
+-- Database: `engineerium`
 --
 
 -- --------------------------------------------------------
@@ -52,16 +52,16 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_i
 (6, 5, 'sent', 'Quote', 1, 'Devis envoyé au client : DEV-2026-00001', NULL, '2026-05-09 13:25:27', '2026-05-09 13:25:27'),
 (7, 4, 'accepted', 'Quote', 1, 'Devis accepté : DEV-2026-00001', NULL, '2026-05-09 13:27:46', '2026-05-09 13:27:46'),
 (8, 4, 'created', 'Invoice', 1, 'Facture créée automatiquement depuis devis accepté : DEV-2026-00001', NULL, '2026-05-09 13:27:46', '2026-05-09 13:27:46'),
-(9, 6, 'validated', 'Invoice', 1, 'Facture validée par le comptable Comptable F_MCOM', NULL, '2026-05-09 13:29:59', '2026-05-09 13:29:59'),
+(9, 6, 'validated', 'Invoice', 1, 'Facture validée par le comptable Comptable ENGINEERIUM SARL', NULL, '2026-05-09 13:29:59', '2026-05-09 13:29:59'),
 (10, 4, 'payment_submitted', 'Invoice', 1, 'Paiement soumis pour la facture FAC-2026-00001', NULL, '2026-05-09 14:10:10', '2026-05-09 14:10:10'),
-(11, 6, 'validated', 'Payment', 1, 'Paiement validé par Comptable F_MCOM', NULL, '2026-05-09 14:21:58', '2026-05-09 14:21:58'),
+(11, 6, 'validated', 'Payment', 1, 'Paiement validé par Comptable ENGINEERIUM SARL', NULL, '2026-05-09 14:21:58', '2026-05-09 14:21:58'),
 (12, 4, 'created', 'ServiceRequest', 2, 'Nouvelle demande créée : desgin pour mon site', NULL, '2026-05-09 15:18:08', '2026-05-09 15:18:08'),
 (13, 5, 'sent', 'Quote', 3, 'Devis envoyé au client : DEV-2026-00002', NULL, '2026-05-09 15:20:09', '2026-05-09 15:20:09'),
 (14, 4, 'accepted', 'Quote', 3, 'Devis accepté : DEV-2026-00002', NULL, '2026-05-09 15:21:26', '2026-05-09 15:21:26'),
 (15, 4, 'created', 'Invoice', 2, 'Facture créée automatiquement depuis devis accepté : DEV-2026-00002', NULL, '2026-05-09 15:21:26', '2026-05-09 15:21:26'),
-(16, 6, 'validated', 'Invoice', 2, 'Facture validée par le comptable Comptable F_MCOM', NULL, '2026-05-09 15:23:48', '2026-05-09 15:23:48'),
+(16, 6, 'validated', 'Invoice', 2, 'Facture validée par le comptable Comptable ENGINEERIUM SARL', NULL, '2026-05-09 15:23:48', '2026-05-09 15:23:48'),
 (17, 4, 'payment_submitted', 'Invoice', 2, 'Paiement soumis pour la facture FAC-2026-00002', NULL, '2026-05-09 15:24:44', '2026-05-09 15:24:44'),
-(18, 6, 'validated', 'Payment', 2, 'Paiement validé par Comptable F_MCOM', NULL, '2026-05-09 15:25:51', '2026-05-09 15:25:51'),
+(18, 6, 'validated', 'Payment', 2, 'Paiement validé par Comptable ENGINEERIUM SARL', NULL, '2026-05-09 15:25:51', '2026-05-09 15:25:51'),
 (19, 4, 'created', 'ServiceRequest', 3, 'Nouvelle demande créée : okokjpok', NULL, '2026-05-09 15:48:00', '2026-05-09 15:48:00'),
 (20, 5, 'sent', 'Quote', 4, 'Devis envoyé au client : DEV-2026-00003', NULL, '2026-05-09 15:50:03', '2026-05-09 15:50:03'),
 (21, 4, 'refused', 'Quote', 4, 'Devis refusé : DEV-2026-00003', NULL, '2026-05-09 15:50:16', '2026-05-09 15:50:16');
@@ -74,9 +74,9 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_i
 
 CREATE TABLE `agency_settings` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `agency_name` varchar(255) NOT NULL DEFAULT 'F_MCOM',
+  `agency_name` varchar(255) NOT NULL DEFAULT 'ENGINEERIUM SARL',
   `logo` varchar(255) DEFAULT NULL,
-  `email` varchar(255) NOT NULL DEFAULT 'contact@fmcom.ma',
+  `email` varchar(255) NOT NULL DEFAULT 'fradi.hichem@gmail.com',
   `phone` varchar(255) DEFAULT NULL,
   `address` text DEFAULT NULL,
   `tax_number` varchar(255) DEFAULT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE `agency_settings` (
 --
 
 INSERT INTO `agency_settings` (`id`, `agency_name`, `logo`, `email`, `phone`, `address`, `tax_number`, `default_tax_rate`, `bank_name`, `bank_account`, `bank_iban`, `invoice_legal_mentions`, `website`, `social_links`, `created_at`, `updated_at`) VALUES
-(1, 'F_MCOM', NULL, 'contact@fmcom.ma', NULL, NULL, NULL, 20.00, NULL, NULL, NULL, NULL, NULL, NULL, '2026-05-09 11:30:52', '2026-05-09 11:30:52');
+(1, 'ENGINEERIUM SARL', NULL, 'fradi.hichem@gmail.com', NULL, NULL, NULL, 20.00, NULL, NULL, NULL, NULL, NULL, NULL, '2026-05-09 11:30:52', '2026-05-09 11:30:52');
 
 -- --------------------------------------------------------
 
@@ -661,8 +661,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `email_verified_at`, `passw
 (2, 'Test Client 2', 'testclient2@example.com', '5551234', NULL, '$2y$12$1nRbRjwSkfc1AmrZVfnOYugO9a1PXfA3.RdREWAT1lGU88Pw36xrO', 'client', NULL, NULL, 1, NULL, '2026-05-09 11:56:36', '2026-05-09 11:56:36'),
 (3, 'Test Client 3', 'testclient3@example.com', '5559999', NULL, '$2y$12$AxxUd9NXwMePCRt6G2o0zucZGpi/pzL7bp9naKQccBbwWvaOZL63a', 'client', NULL, NULL, 0, NULL, '2026-05-09 11:57:59', '2026-05-09 12:14:14'),
 (4, 'Med yassine Hajji', 'medyassinehaji87@gmail.com', '56046336', NULL, '$2y$12$S6M4wuM09L4NJJOScivXzezOqoYnVmc0buFuZ6y23F8G.QPatxM8e', 'client', NULL, NULL, 1, NULL, '2026-05-09 11:59:24', '2026-05-09 11:59:24'),
-(5, 'Admin F_MCOM', 'admin@fmcom.ma', '+212600000001', NULL, '$2y$12$KZ8JCfcqqfP3Kd96k964u.mvUc1s4NrOJQps2xkssw7Em0Vq3.MK.', 'admin', NULL, NULL, 1, NULL, '2026-05-09 12:04:19', '2026-05-09 12:05:01'),
-(6, 'Comptable F_MCOM', 'comptable@fmcom.ma', '+212600000002', NULL, '$2y$12$yx/Jhh1MCNEZXwiz7H.j3.vb4Sfx4FYYT8OWd2NZG2k5DLhdDmDpG', 'accountant', NULL, NULL, 1, NULL, '2026-05-09 13:00:06', '2026-05-09 13:00:06');
+(5, 'Admin ENGINEERIUM SARL', 'admin@engineerium.tn', '+212600000001', NULL, '$2y$12$KZ8JCfcqqfP3Kd96k964u.mvUc1s4NrOJQps2xkssw7Em0Vq3.MK.', 'admin', NULL, NULL, 1, NULL, '2026-05-09 12:04:19', '2026-05-09 12:05:01'),
+(6, 'Comptable ENGINEERIUM SARL', 'comptable@engineerium.tn', '+212600000002', NULL, '$2y$12$yx/Jhh1MCNEZXwiz7H.j3.vb4Sfx4FYYT8OWd2NZG2k5DLhdDmDpG', 'accountant', NULL, NULL, 1, NULL, '2026-05-09 13:00:06', '2026-05-09 13:00:06');
 
 --
 -- Indexes for dumped tables

@@ -21,7 +21,7 @@ export function ProtectedRoute({ children, role, loginPath = '/login' }) {
   }
 
   if (role && user.role !== role) {
-    const redirects = { admin: '/admin', client: '/client', accountant: '/accountant' }
+    const redirects = { admin: '/admin', client: '/client', accountant: '/accountant', engineer: '/engineer' }
     return <Navigate to={redirects[user.role] || '/'} replace />
   }
 

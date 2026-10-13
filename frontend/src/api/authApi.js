@@ -6,5 +6,5 @@ export const authApi = {
   logout:   ()      => api.post('/logout'),
   me:       ()      => api.get('/user'),
   googleRedirect: () => api.get('/auth/google/redirect'),
-  updateProfile:  (data) => api.put('/client/profile', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  updateProfile:  (data) => api.post('/client/profile', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }

@@ -21,7 +21,7 @@ export default function GoogleCallback() {
 
     if (token) {
       // Fetch user with the token
-      localStorage.setItem('fmcom_token', token)
+      localStorage.setItem('engineerium_token', token)
       api.get('/user').then(({ data }) => {
         loginWithToken(token, data.user)
         toast.success(`Bienvenue, ${data.user.name} !`)

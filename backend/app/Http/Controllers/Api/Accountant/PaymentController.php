@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Receipt;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -37,28 +38,29 @@ class PaymentController extends Controller
             'comment' => ['nullable', 'string'],
         ]);
 
-        if ($payment->status !== 'pending') {
-            return response()->json(['message' => 'Ce paiement a déjà été traité.'], 422);
-        }
-
-        $payment->update([
+        $result = DB::transaction(function () use ($payment, $request) {
+            $locked = Payment::whereKey($payment->id)->lockForUpdate()->firstOrFail();
+            if ($locked->status !== 'pending' || $locked->invoice->status !== 'payment_pending') {
+                abort(422, 'Ce paiement a déjà été traité ou sa facture n’est plus en attente.');
+            }
+            $locked->update([
             'status'                     => 'success',
             'accountant_comment'         => $request->comment,
             'validated_by_accountant_id' => auth()->id(),
             'paid_at'                    => now(),
-        ]);
+            ]);
 
-        $payment->invoice->update([
+        $locked->invoice->update([
             'status'  => 'paid',
             'paid_at' => now(),
-        ]);
+            ]);
 
-        // Generate receipt
-        $receipt = Receipt::create([
-            'payment_id' => $payment->id,
-            'invoice_id' => $payment->invoice_id,
-            'client_id'  => $payment->client_id,
-            'amount'     => $payment->amount,
+            return $locked->fresh(['invoice']);
+        });
+        $payment = $result;
+        $receipt = $payment->receipt ?? Receipt::create([
+            'payment_id' => $payment->id, 'invoice_id' => $payment->invoice_id,
+            'client_id' => $payment->client_id, 'amount' => $payment->amount,
         ]);
 
         $pdf = $this->pdfService->generateReceiptPdf($receipt->load(['client', 'invoice', 'payment']));
@@ -70,9 +72,9 @@ class PaymentController extends Controller
         AppNotification::create([
             'user_id' => $payment->client_id,
             'title'   => 'Paiement validé',
-            'message' => 'Votre paiement de ' . number_format($payment->amount, 2) . ' MAD a été validé. Reçu disponible.',
+            'message' => 'Votre paiement de ' . number_format($payment->amount, 2) . ' TND a été validé. Reçu disponible.',
             'type'    => 'payment_validated',
-            'link'    => '/client/receipts/' . $receipt->id,
+            'link'    => '/client/invoices/' . $payment->invoice_id,
         ]);
 
         ActivityLog::record('validated', 'Payment', $payment->id,

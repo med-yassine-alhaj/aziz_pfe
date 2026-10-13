@@ -24,6 +24,7 @@ export default function ClientProfile() {
         fd.append('password_confirmation', data.password_confirmation)
       }
       if (avatar) fd.append('avatar', avatar)
+      fd.append('_method', 'PUT')
 
       const { data: res } = await authApi.updateProfile(fd)
       updateUser(res.data || res)

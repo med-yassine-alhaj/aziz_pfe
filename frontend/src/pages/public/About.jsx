@@ -8,25 +8,23 @@ export default function About() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-dark-nav text-white py-16 px-4 text-center">
-        <h1 className="text-4xl font-extrabold">À propos de F_MCOM</h1>
+        <h1 className="text-4xl font-extrabold">À propos d’ENGINEERIUM</h1>
         <p className="text-gray-300 mt-3 max-w-xl mx-auto">
-          Votre partenaire de confiance pour toute votre communication digitale.
+          Un bureau d’études dédié à la conception fiable et au suivi maîtrisé des projets de construction.
         </p>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-16">
         {/* Story */}
         <div className="bg-white rounded-card shadow-card p-10 mb-10">
-          <h2 className="text-3xl font-extrabold text-dark mb-4">Notre histoire</h2>
+          <h2 className="text-3xl font-extrabold text-dark mb-4">Notre métier</h2>
           <p className="text-gray-600 leading-relaxed text-lg">
-            F_MCOM est une agence de communication digitale fondée avec une ambition claire :
-            offrir aux entreprises marocaines et africaines un accès à des services de communication
-            de niveau international, avec une approche 100% personnalisée.
+            ENGINEERIUM SARL accompagne les maîtres d’ouvrage, architectes et entreprises dans
+            les études de bâtiments et d’ouvrages d’art, des avant-projets aux plans d’exécution.
           </p>
           <p className="text-gray-600 leading-relaxed text-lg mt-4">
-            Notre équipe de créatifs, de stratèges et de techniciens travaille en synergie pour
-            concevoir des solutions qui font la différence. Chaque projet est une opportunité de
-            créer quelque chose d'exceptionnel.
+            Notre approche associe analyse du besoin, dimensionnement, production documentaire,
+            contrôle interne et coordination technique sur chantier.
           </p>
         </div>
 
@@ -50,10 +48,10 @@ export default function About() {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8">
             {[
-              { role: 'Direction', count: '2' },
-              { role: 'Design',    count: '4' },
-              { role: 'Dev',       count: '3' },
-              { role: 'Marketing', count: '3' },
+              { role: 'Bâtiments', count: '01' },
+              { role: 'Structures', count: '01' },
+              { role: 'Exécution', count: '01' },
+              { role: 'Chantier', count: '01' },
             ].map(t => (
               <div key={t.role} className="bg-primary-light rounded-2xl p-6">
                 <p className="text-3xl font-extrabold text-primary">{t.count}</p>

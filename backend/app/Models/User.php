@@ -28,11 +28,13 @@ class User extends Authenticatable
     public function scopeClients($query)   { return $query->where('role', 'client'); }
     public function scopeAdmins($query)    { return $query->where('role', 'admin'); }
     public function scopeAccountants($query) { return $query->where('role', 'accountant'); }
+    public function scopeEngineers($query) { return $query->where('role', 'engineer'); }
 
     // --- Helpers ---
     public function isAdmin(): bool      { return $this->role === 'admin'; }
     public function isClient(): bool     { return $this->role === 'client'; }
     public function isAccountant(): bool { return $this->role === 'accountant'; }
+    public function isEngineer(): bool { return $this->role === 'engineer'; }
 
     // --- Relations ---
     public function serviceRequests()
@@ -43,6 +45,11 @@ class User extends Authenticatable
     public function assignedRequests()
     {
         return $this->hasMany(ServiceRequest::class, 'assigned_admin_id');
+    }
+
+    public function assignedProjects()
+    {
+        return $this->hasMany(Project::class, 'responsible_engineer_id');
     }
 
     public function conversations()

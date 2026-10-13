@@ -14,6 +14,7 @@ use App\Models\Quote;
 use App\Models\QuoteItem;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
@@ -128,7 +129,15 @@ class QuoteController extends Controller
             return response()->json(['message' => 'Le devis doit être accepté pour générer une facture.'], 422);
         }
 
-        $invoice = Invoice::create([
+        if (Invoice::where('quote_id', $quote->id)->exists()) {
+            return response()->json(['message' => 'Une facture existe déjà pour ce devis.'], 422);
+        }
+        $invoice = DB::transaction(function () use ($quote) {
+            $lockedQuote = Quote::whereKey($quote->id)->lockForUpdate()->firstOrFail();
+            if (Invoice::where('quote_id', $lockedQuote->id)->exists()) {
+                abort(422, 'Une facture existe déjà pour ce devis.');
+            }
+            $created = Invoice::create([
             'client_id'          => $quote->client_id,
             'service_request_id' => $quote->service_request_id,
             'quote_id'           => $quote->id,
@@ -139,9 +148,9 @@ class QuoteController extends Controller
             'status'             => 'waiting_accountant_validation',
             'notes'              => $quote->notes,
             'created_by'         => auth()->id(),
-        ]);
+            ]);
 
-        foreach ($quote->items as $item) {
+        foreach ($lockedQuote->items as $item) {
             InvoiceItem::create([
                 'invoice_id'      => $invoice->id,
                 'title'           => $item->title,
@@ -153,6 +162,8 @@ class QuoteController extends Controller
                 'order'           => $item->order,
             ]);
         }
+            return $created;
+        });
 
         $quote->serviceRequest->update(['status' => 'invoice_generated']);
 

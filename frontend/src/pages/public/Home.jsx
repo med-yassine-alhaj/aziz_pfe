@@ -5,16 +5,16 @@ import { servicesApi } from '../../api/servicesApi'
 import { packsApi } from '../../api/packsApi'
 
 const steps = [
-  { n: '01', title: 'Choisissez un service', desc: 'Parcourez nos services et sélectionnez celui qui correspond à votre besoin.' },
-  { n: '02', title: 'Envoyez une demande',   desc: 'Décrivez votre projet. Notre équipe analyse votre demande rapidement.' },
-  { n: '03', title: 'Discussion & devis',    desc: 'Un expert vous contacte pour affiner les détails et vous envoyer un devis personnalisé.' },
-  { n: '04', title: 'Production & livraison', desc: 'Après validation, nous réalisons votre projet avec soin et professionnalisme.' },
+  { n: '01', title: 'Soumettez votre projet', desc: 'Indiquez l’ouvrage, le site, la mission souhaitée et les documents disponibles.' },
+  { n: '02', title: 'Analyse technique', desc: 'Nous précisons le périmètre, les livrables et le délai indicatif.' },
+  { n: '03', title: 'Devis personnalisé', desc: 'Le prix est établi selon les caractéristiques réelles du projet, sans tarif inventé.' },
+  { n: '04', title: 'Études et suivi', desc: 'Les documents sont produits, contrôlés et transmis avec un suivi des observations.' },
 ]
 
 const reasons = [
   { icon: '🎯', title: 'Sur mesure',       desc: 'Chaque projet est unique. Nous adaptons notre approche à vos objectifs.' },
   { icon: '⚡', title: 'Réactivité',       desc: 'Réponse rapide, délais respectés, communication transparente.' },
-  { icon: '🏆', title: 'Expertise',         desc: '+5 ans d\'expérience dans la communication digitale.' },
+  { icon: '🏆', title: 'Rigueur technique', desc: 'Des documents structurés et contrôlés avant transmission.' },
   { icon: '💎', title: 'Qualité premium',   desc: 'Des livrables qui reflètent l\'excellence et le professionnalisme.' },
 ]
 
@@ -34,22 +34,22 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-dark-nav via-dark-nav to-primary/20" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-flex items-center gap-2 bg-primary-light text-primary text-sm font-semibold px-4 py-2 rounded-full mb-6">
-            ✨ Agence de Communication Digitale
+            ✨ Bureau d’études en bâtiments et ouvrages d’art
           </span>
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-            Votre vision,<br />
-            <span className="text-primary">notre expertise.</span>
+            Concevoir juste,<br />
+            <span className="text-primary">construire durablement.</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10">
-            De la stratégie à la créativité, nous transformons vos idées en succès digitaux.
-            Des solutions sur mesure, adaptées à chaque projet.
+            ENGINEERIUM SARL accompagne les avant-projets, les études de structure, les plans
+            d’exécution et la coordination technique sur chantier.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/services" className="bg-primary text-white font-bold px-8 py-4 rounded-btn hover:bg-primary-dark transition-all text-lg">
-              Voir nos services
+              Découvrir nos prestations
             </Link>
             <Link to="/contact" className="border-2 border-white/30 text-white font-semibold px-8 py-4 rounded-btn hover:border-white transition-all text-lg">
-              Nous contacter
+              Soumettre un projet
             </Link>
           </div>
         </div>
@@ -59,16 +59,16 @@ export default function Home() {
       <section className="py-20 px-4 bg-surface">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <span className="badge-devis mb-3 inline-block">Nos Services</span>
-            <h2 className="text-4xl font-extrabold text-dark">Ce que nous faisons</h2>
-            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Chaque service est proposé sur devis, adapté à vos besoins spécifiques.</p>
+            <span className="badge-devis mb-3 inline-block">Nos prestations</span>
+            <h2 className="text-4xl font-extrabold text-dark">De l’étude au chantier</h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Chaque mission est définie sur mesure selon les données et contraintes de l’ouvrage.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map(s => <ServiceCard key={s.id} service={s} />)}
           </div>
           <div className="text-center mt-10">
             <Link to="/services" className="btn-primary inline-flex">
-              Voir tous les services
+              Voir toutes les prestations
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -103,9 +103,9 @@ export default function Home() {
         <section className="py-20 px-4 bg-surface">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <span className="badge-devis mb-3 inline-block">Packs</span>
-              <h2 className="text-4xl font-extrabold text-dark">Nos offres groupées</h2>
-              <p className="text-gray-500 mt-3">Tous les prix sont sur devis, adaptés à votre budget.</p>
+              <span className="badge-devis mb-3 inline-block">Missions d’études</span>
+              <h2 className="text-4xl font-extrabold text-dark">Des périmètres clairs</h2>
+              <p className="text-gray-500 mt-3">Livrables, pièces nécessaires et délais indicatifs sont précisés dans chaque proposition.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {packs.map((pack, i) => (
@@ -154,8 +154,8 @@ export default function Home() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-extrabold mb-4">Prêt à démarrer votre projet ?</h2>
           <p className="text-gray-300 mb-8">Contactez-nous pour un devis personnalisé. Sans engagement.</p>
-          <Link to="/register" className="bg-primary text-white font-bold px-10 py-4 rounded-btn hover:bg-primary-dark transition-all text-lg inline-block">
-            Commencer maintenant
+          <Link to="/contact" className="bg-primary text-white font-bold px-10 py-4 rounded-btn hover:bg-primary-dark transition-all text-lg inline-block">
+            Soumettre un projet
           </Link>
         </div>
       </section>

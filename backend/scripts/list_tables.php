@@ -1,6 +1,6 @@
 <?php
 try {
-    $pdo = new PDO('mysql:host=127.0.0.1;dbname=fmcom;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=engineerium;charset=utf8mb4', 'root', '');
     $res = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
     echo "Tables:\n";
     foreach ($res as $t) echo "- $t\n";

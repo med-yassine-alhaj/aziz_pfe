@@ -1,6 +1,6 @@
 param(
-    [string]$name = 'Admin F_MCOM',
-    [string]$email = 'admin@fmcom.ma',
+    [string]$name = 'Admin ENGINEERIUM SARL',
+    [string]$email = 'admin@engineerium.tn',
     [string]$phone = '+212600000001',
     [string]$password = 'Admin@2024'
 )

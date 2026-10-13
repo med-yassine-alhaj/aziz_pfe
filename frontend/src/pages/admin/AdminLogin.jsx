@@ -17,6 +17,7 @@ export default function AdminLogin() {
     if (from && from !== '/admin/login') return navigate(from, { replace: true })
     if (role === 'admin') return navigate('/admin/dashboard', { replace: true })
     if (role === 'accountant') return navigate('/accountant/dashboard', { replace: true })
+    if (role === 'engineer') return navigate('/engineer/dashboard', { replace: true })
     return navigate('/client/dashboard', { replace: true })
   }
 
@@ -24,8 +25,9 @@ export default function AdminLogin() {
     setLoading(true)
     try {
       const user = await login(data)
-      if (user.role !== 'admin') {
-        toast.error('Ce portail est réservé aux administrateurs.')
+      const engineerPortal = window.location.pathname.startsWith('/engineer')
+      if (user.role !== (engineerPortal ? 'engineer' : 'admin')) {
+        toast.error(engineerPortal ? 'Ce portail est réservé aux ingénieurs.' : 'Ce portail est réservé aux administrateurs.')
         return navigate('/', { replace: true })
       }
       toast.success(`Bienvenue, ${user.name} !`)
@@ -42,21 +44,19 @@ export default function AdminLogin() {
       <div className="w-full max-w-md">
         <div className="rounded-[28px] border border-white/10 bg-white/95 shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur px-8 py-10">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30 mb-4">
-              <span className="text-2xl font-black text-white">A</span>
-            </div>
-            <p className="text-xs uppercase tracking-[0.35em] text-violet-500 font-semibold">Admin Portal</p>
-            <h1 className="text-3xl font-black text-slate-900 mt-3">Connexion administrateur</h1>
-            <p className="text-slate-500 text-sm mt-2">Accès sécurisé au tableau de bord admin</p>
+            <img src="/engineerium-logo.png" alt="ENGINEERIUM" className="w-28 h-20 mx-auto object-contain mb-4" />
+            <p className="text-xs uppercase tracking-[0.35em] text-violet-500 font-semibold">{window.location.pathname.startsWith('/engineer') ? 'Engineer Portal' : 'Admin Portal'}</p>
+            <h1 className="text-3xl font-black text-slate-900 mt-3">{window.location.pathname.startsWith('/engineer') ? 'Connexion ingénieur' : 'Connexion administrateur'}</h1>
+            <p className="text-slate-500 text-sm mt-2">Accès sécurisé aux dossiers autorisés</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email admin</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email administrateur</label>
               <input
                 type="email"
                 className="input"
-                placeholder="admin@fmcom.ma"
+                placeholder="admin@engineerium.tn"
                 {...register('email', { required: 'Email requis', pattern: { value: /\S+@\S+\.\S+/, message: 'Email invalide' } })}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}

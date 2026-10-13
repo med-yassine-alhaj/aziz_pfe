@@ -10,10 +10,21 @@ export default function DashboardHeader() {
   const [unread, setUnread]               = useState(0)
 
   useEffect(() => {
-    api.get('/notifications').then(({ data }) => {
-      setNotifications(data.slice(0, 8))
-      setUnread(data.filter(n => !n.is_read).length)
-    }).catch(() => {})
+    let active = true
+    const loadNotifications = async () => {
+      try {
+        const { data } = await api.get('/notifications')
+        if (!active) return
+        setNotifications(data.slice(0, 8))
+        setUnread(data.filter(n => !n.is_read).length)
+      } catch {}
+    }
+    loadNotifications()
+    const interval = window.setInterval(loadNotifications, 5000)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+    }
   }, [])
 
   const markAllRead = () => {

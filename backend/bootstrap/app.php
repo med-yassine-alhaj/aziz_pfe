@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role.admin'      => \App\Http\Middleware\AdminMiddleware::class,
             'role.accountant' => \App\Http\Middleware\AccountantMiddleware::class,
             'role.client'     => \App\Http\Middleware\ClientMiddleware::class,
+            'role.engineer'   => \App\Http\Middleware\EngineerMiddleware::class,
             'ensure.active'   => \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
     })

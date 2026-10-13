@@ -74,7 +74,7 @@ class Quote extends Model
         $this->update([
             'subtotal'        => $subtotal,
             'tax_amount'      => $taxAmount,
-            'total'           => $subtotal + $taxAmount - $this->discount_amount,
+            'total'           => max(0, $subtotal + $taxAmount - $this->discount_amount),
         ]);
     }
 

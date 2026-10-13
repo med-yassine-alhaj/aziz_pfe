@@ -20,11 +20,13 @@
         .info-label { color: #666; }
         .info-value { font-weight: bold; color: #091127; }
         .footer { text-align: center; margin-top: 30px; font-size: 10px; color: #999; padding-top: 16px; border-top: 1px solid #eee; }
+        .logo { width: 150px; height: auto; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 <div class="page">
     <div class="header">
+        <img class="logo" src="{{ public_path('engineerium-logo.png') }}" alt="ENGINEERIUM SARL">
         <div class="agency-name">{{ $settings->agency_name }}</div>
         <div class="receipt-icon">✓</div>
         <div class="receipt-title">REÇU DE PAIEMENT</div>
@@ -33,7 +35,7 @@
 
     <div class="amount-box">
         <div class="label">Montant payé</div>
-        <div class="amount">{{ number_format($receipt->amount, 2) }} MAD</div>
+        <div class="amount">{{ number_format($receipt->amount, 2) }} TND</div>
     </div>
 
     <div class="info-section">

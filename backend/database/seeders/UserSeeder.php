@@ -11,45 +11,54 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name'     => 'Admin F_MCOM',
-            'email'    => 'admin@fmcom.ma',
-            'phone'    => '+212600000001',
+            'name'     => 'Administrateur ENGINEERIUM (démo)',
+            'email'    => 'admin.demo@engineerium.test',
+            'phone'    => '+21671000001',
             'password' => Hash::make('Admin@2024'),
             'role'     => 'admin',
             'is_active' => true,
         ]);
 
         User::create([
-            'name'     => 'Comptable F_MCOM',
-            'email'    => 'comptable@fmcom.ma',
-            'phone'    => '+212600000002',
+            'name'     => 'Comptable ENGINEERIUM (démo)',
+            'email'    => 'comptable.demo@engineerium.test',
+            'phone'    => '+21671000002',
             'password' => Hash::make('Comptable@2024'),
             'role'     => 'accountant',
             'is_active' => true,
         ]);
 
         User::create([
-            'name'     => 'Youssef Alami',
-            'email'    => 'youssef@test.ma',
-            'phone'    => '+212612345678',
+            'name'     => 'Ingénieur ENGINEERIUM (démo)',
+            'email'    => 'ingenieur.demo@engineerium.test',
+            'phone'    => '+21671000003',
+            'password' => Hash::make('Ingenieur@2024'),
+            'role'     => 'engineer',
+            'is_active' => true,
+        ]);
+
+        User::create([
+            'name'     => 'Client bâtiment (démo)',
+            'email'    => 'client.batiment@engineerium.test',
+            'phone'    => '+21671000004',
             'password' => Hash::make('Client@2024'),
             'role'     => 'client',
             'is_active' => true,
         ]);
 
         User::create([
-            'name'     => 'Fatima Zahra',
-            'email'    => 'fatima@test.ma',
-            'phone'    => '+212698765432',
+            'name'     => 'Client ouvrage (démo)',
+            'email'    => 'client.ouvrage@engineerium.test',
+            'phone'    => '+21671000005',
             'password' => Hash::make('Client@2024'),
             'role'     => 'client',
             'is_active' => true,
         ]);
 
         User::create([
-            'name'     => 'Mohamed Benali',
-            'email'    => 'mohamed@test.ma',
-            'phone'    => '+212655555555',
+            'name'     => 'Client réhabilitation (démo)',
+            'email'    => 'client.rehabilitation@engineerium.test',
+            'phone'    => '+21671000006',
             'password' => Hash::make('Client@2024'),
             'role'     => 'client',
             'is_active' => true,

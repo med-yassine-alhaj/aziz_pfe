@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import api from '../../api/axios'
 
 export default function Contact() {
   const [loading, setLoading] = useState(false)
@@ -8,11 +9,15 @@ export default function Contact() {
 
   const onSubmit = async (data) => {
     setLoading(true)
-    // Simulate send (no backend endpoint for public contact, extend if needed)
-    await new Promise(r => setTimeout(r, 1200))
-    toast.success('Message envoyé ! Nous vous répondrons très bientôt.')
-    reset()
-    setLoading(false)
+    try {
+      await api.post('/contact', data)
+      toast.success('Votre demande a bien été transmise à ENGINEERIUM.')
+      reset()
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'La transmission a échoué. Réessayez.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -29,9 +34,9 @@ export default function Contact() {
             <h2 className="text-2xl font-extrabold text-dark mb-6">Nos coordonnées</h2>
             <div className="space-y-4">
               {[
-                { icon: '📧', label: 'Email',    val: 'contact@fmcom.ma' },
-                { icon: '📞', label: 'Téléphone', val: '+212 5XX-XXXXXX' },
-                { icon: '📍', label: 'Adresse',   val: 'Casablanca, Maroc' },
+                { icon: '📧', label: 'Email',    val: 'fradi.hichem@gmail.com' },
+                { icon: '📞', label: 'Téléphone', val: '+216 71 766 100' },
+                { icon: '📍', label: 'Adresse',   val: 'Appartement D2, résidence La Tulipe, Centre urbain nord, 1082 Tunis' },
                 { icon: '🕐', label: 'Horaires',  val: 'Lun — Ven : 9h — 18h' },
               ].map(item => (
                 <div key={item.label} className="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-card">
@@ -58,7 +63,7 @@ export default function Contact() {
 
           {/* Form */}
           <div className="bg-white rounded-card shadow-card p-8">
-            <h2 className="text-2xl font-extrabold text-dark mb-6">Envoyez un message</h2>
+            <h2 className="text-2xl font-extrabold text-dark mb-6">Soumettre un projet</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -74,7 +79,7 @@ export default function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-dark mb-1.5">Sujet *</label>
-                <input className="input" {...register('subject', { required: 'Requis' })} placeholder="De quoi s'agit-il ?" />
+                <input className="input" {...register('subject', { required: 'Requis' })} placeholder="Objet de votre demande" />
                 {errors.subject && <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>}
               </div>
               <div>
@@ -92,7 +97,7 @@ export default function Contact() {
                 disabled={loading}
                 className="w-full bg-dark-nav text-white font-bold py-3 rounded-btn hover:bg-primary transition-all disabled:opacity-60"
               >
-                {loading ? 'Envoi en cours...' : 'Envoyer le message'}
+                {loading ? 'Transmission en cours...' : 'Soumettre le projet'}
               </button>
             </form>
           </div>

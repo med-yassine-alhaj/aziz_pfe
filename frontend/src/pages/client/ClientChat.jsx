@@ -16,12 +16,23 @@ export default function ClientChat() {
   const bottomRef           = useRef(null)
 
   useEffect(() => {
-    messagesApi.clientGetChat(id)
-      .then(({ data }) => {
-        setData(data)
-        setMessages(data.messages)
-      })
-      .catch(() => toast.error('Erreur lors du chargement de la discussion.'))
+    let active = true
+    const loadChat = async (notifyOnError = true) => {
+      try {
+        const { data: chat } = await messagesApi.clientGetChat(id)
+        if (!active) return
+        setData(chat)
+        setMessages(chat.messages)
+      } catch {
+        if (notifyOnError) toast.error('Erreur lors du chargement de la discussion.')
+      }
+    }
+    loadChat()
+    const interval = window.setInterval(() => loadChat(false), 3000)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+    }
   }, [id])
 
   useEffect(() => {
@@ -36,7 +47,7 @@ export default function ClientChat() {
       if (text.trim()) fd.append('message', text)
       if (file) fd.append('attachment', file)
       const { data: msg } = await messagesApi.clientSend(id, fd)
-      setMessages(prev => [...prev, msg])
+      setMessages(prev => prev.some(item => item.id === msg.id) ? prev : [...prev, msg])
       setText('')
       setFile(null)
     } catch {

@@ -1,9 +1,9 @@
 <?php
 try {
-    $pdo = new PDO('mysql:host=127.0.0.1;dbname=fmcom;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=engineerium;charset=utf8mb4', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
-    $tables = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'fmcom'")->fetchAll(PDO::FETCH_COLUMN);
+    $tables = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'engineerium'")->fetchAll(PDO::FETCH_COLUMN);
     if (empty($tables)) {
         echo "No tables to drop\n";
     } else {

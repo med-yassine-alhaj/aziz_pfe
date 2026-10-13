@@ -91,23 +91,32 @@ class InvoiceController extends Controller
         ]);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $invoices = Invoice::with(['client', 'serviceRequest.service'])->get();
+        $query = Invoice::with(['client', 'serviceRequest.service'])->latest();
+        if ($request->status) $query->where('status', $request->status);
+        if ($request->client_id) $query->where('client_id', $request->client_id);
+        if ($request->date_from) $query->whereDate('created_at', '>=', $request->date_from);
+        if ($request->date_to) $query->whereDate('created_at', '<=', $request->date_to);
+        $invoices = $query->get();
 
-        $csv = "Numéro,Client,Service,Montant HT,TVA,Total TTC,Statut,Date\n";
+        $stream = fopen('php://temp', 'w+');
+        fputcsv($stream, ['Numéro', 'Client', 'Service', 'Montant HT', 'TVA', 'Total TTC', 'Statut', 'Date']);
         foreach ($invoices as $inv) {
-            $csv .= implode(',', [
+            fputcsv($stream, [
                 $inv->invoice_number,
-                '"' . ($inv->client->name ?? '') . '"',
-                '"' . ($inv->serviceRequest->service->name ?? '') . '"',
+                $inv->client->name ?? '',
+                $inv->serviceRequest->service->name ?? '',
                 number_format($inv->subtotal, 2),
                 number_format($inv->tax_amount, 2),
                 number_format($inv->total, 2),
                 $inv->status_label,
                 $inv->created_at->format('d/m/Y'),
-            ]) . "\n";
+            ]);
         }
+        rewind($stream);
+        $csv = stream_get_contents($stream);
+        fclose($stream);
 
         return response($csv, 200, [
             'Content-Type'        => 'text/csv',

@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('agency_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('agency_name')->default('F_MCOM');
+            $table->string('agency_name')->default('ENGINEERIUM SARL');
             $table->string('logo')->nullable();
-            $table->string('email')->default('contact@fmcom.ma');
+            $table->string('email')->default('fradi.hichem@gmail.com');
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('tax_number')->nullable();

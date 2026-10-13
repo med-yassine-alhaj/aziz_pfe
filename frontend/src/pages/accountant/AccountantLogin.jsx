@@ -33,9 +33,7 @@ export default function AccountantLogin() {
       <div className="w-full max-w-md">
         <div className="rounded-[28px] border border-white/10 bg-white/95 shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur px-8 py-10">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30 mb-4">
-              <span className="text-2xl font-black text-white">C</span>
-            </div>
+            <img src="/engineerium-logo.png" alt="ENGINEERIUM" className="w-28 h-20 mx-auto object-contain mb-4" />
             <p className="text-xs uppercase tracking-[0.35em] text-green-500 font-semibold">Comptable Portal</p>
             <h1 className="text-3xl font-black text-slate-900 mt-3">Connexion comptable</h1>
             <p className="text-slate-500 text-sm mt-2">Accès sécurisé au tableau de bord comptable</p>
@@ -47,7 +45,7 @@ export default function AccountantLogin() {
               <input
                 type="email"
                 className="input"
-                placeholder="comptable@fmcom.ma"
+                placeholder="comptable@engineerium.tn"
                 {...register('email', { required: 'Email requis', pattern: { value: /\S+@\S+\.\S+/, message: 'Email invalide' } })}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}

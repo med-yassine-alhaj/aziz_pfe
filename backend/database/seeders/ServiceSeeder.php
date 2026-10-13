@@ -11,62 +11,12 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         $services = [
-            [
-                'name'        => 'Graphic Design',
-                'description' => 'Création de visuels professionnels pour vos supports de communication : affiches, flyers, bannières, cartes de visite et bien plus.',
-                'icon'        => 'PaintBrushIcon',
-                'category'    => 'Design',
-                'order'       => 1,
-            ],
-            [
-                'name'        => 'UI/UX Design',
-                'description' => 'Conception d\'interfaces utilisateur intuitives et d\'expériences digitales mémorables pour vos applications et sites web.',
-                'icon'        => 'DevicePhoneMobileIcon',
-                'category'    => 'Design',
-                'order'       => 2,
-            ],
-            [
-                'name'        => 'Branding & Identité',
-                'description' => 'Création de votre identité visuelle complète : logo, charte graphique, guidelines de marque pour une image cohérente et impactante.',
-                'icon'        => 'StarIcon',
-                'category'    => 'Design',
-                'order'       => 3,
-            ],
-            [
-                'name'        => 'Site Web',
-                'description' => 'Développement de sites web modernes, rapides et responsives : vitrine, e-commerce, landing page ou application web sur mesure.',
-                'icon'        => 'GlobeAltIcon',
-                'category'    => 'Développement',
-                'order'       => 4,
-            ],
-            [
-                'name'        => 'Montage Vidéo',
-                'description' => 'Production et montage de contenus vidéo professionnels : publicités, clips, reels, motion design et animations pour vos réseaux sociaux.',
-                'icon'        => 'FilmIcon',
-                'category'    => 'Contenu',
-                'order'       => 5,
-            ],
-            [
-                'name'        => 'Communication Générale',
-                'description' => 'Stratégie et mise en œuvre de votre plan de communication multicanal pour renforcer votre présence et votre notoriété.',
-                'icon'        => 'MegaphoneIcon',
-                'category'    => 'Communication',
-                'order'       => 6,
-            ],
-            [
-                'name'        => 'Stratégie Marketing',
-                'description' => 'Élaboration de stratégies marketing digitales data-driven : SEO, SEA, email marketing, growth hacking et acquisition clients.',
-                'icon'        => 'ChartBarIcon',
-                'category'    => 'Marketing',
-                'order'       => 7,
-            ],
-            [
-                'name'        => 'Stratégie de Communication',
-                'description' => 'Définition de votre positionnement, de vos messages clés et de votre stratégie de contenu pour toucher votre audience cible.',
-                'icon'        => 'LightBulbIcon',
-                'category'    => 'Communication',
-                'order'       => 8,
-            ],
+            ['name' => 'Avant-projet bâtiment', 'description' => 'Analyse du besoin, études de variantes et pièces d’avant-projet pour bâtiments.', 'icon' => 'BuildingOfficeIcon', 'category' => 'Bâtiments', 'order' => 1],
+            ['name' => 'Étude de structure', 'description' => 'Dimensionnement et justification des structures en béton armé, acier ou maçonnerie.', 'icon' => 'CubeIcon', 'category' => 'Structures', 'order' => 2],
+            ['name' => 'Plans d’exécution', 'description' => 'Production et contrôle des plans, détails et documents nécessaires à l’exécution.', 'icon' => 'DocumentTextIcon', 'category' => 'Exécution', 'order' => 3],
+            ['name' => 'Ouvrages d’art', 'description' => 'Études d’ouvrages d’art et analyse des solutions techniques adaptées au site.', 'icon' => 'RectangleGroupIcon', 'category' => 'Ouvrages d’art', 'order' => 4],
+            ['name' => 'Suivi et coordination de chantier', 'description' => 'Suivi technique, coordination des intervenants, contrôle des documents et observations.', 'icon' => 'ClipboardDocumentCheckIcon', 'category' => 'Chantier', 'order' => 5],
+            ['name' => 'Réhabilitation et diagnostic', 'description' => 'Diagnostic de l’existant, analyse des désordres et études de renforcement.', 'icon' => 'WrenchScrewdriverIcon', 'category' => 'Réhabilitation', 'order' => 6],
         ];
 
         foreach ($services as $service) {

@@ -19,6 +19,9 @@ import Register from './pages/public/Register'
 import GoogleCallback from './pages/public/GoogleCallback'
 import AdminLogin from './pages/admin/AdminLogin'
 import AccountantLogin from './pages/accountant/AccountantLogin'
+import EngineerLogin from './pages/engineer/EngineerLogin'
+import EngineerLayout from './layouts/EngineerLayout'
+import EngineerDashboard from './pages/engineer/EngineerDashboard'
 
 // Client pages
 import ClientDashboard from './pages/client/ClientDashboard'
@@ -54,8 +57,8 @@ import AccountantReports from './pages/accountant/AccountantReports'
 
 export default function App() {
   const portal = import.meta.env.VITE_APP_PORTAL
-  const isStaffPortal = portal === 'admin' || portal === 'accountant'
-  const staffLoginPath = portal === 'accountant' ? '/accountant/login' : '/admin/login'
+  const isStaffPortal = portal === 'admin' || portal === 'accountant' || portal === 'engineer'
+  const staffLoginPath = portal === 'accountant' ? '/accountant/login' : portal === 'engineer' ? '/engineer/login' : '/admin/login'
 
   if (isStaffPortal) {
     return (
@@ -64,6 +67,7 @@ export default function App() {
           <Route path="/" element={<Navigate to={staffLoginPath} replace />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/accountant/login" element={<AccountantLogin />} />
+          <Route path="/engineer/login" element={<EngineerLogin />} />
 
           <Route path="admin" element={<ProtectedRoute role="admin" loginPath="/admin/login"><AdminLayout /></ProtectedRoute>}>
             <Route index element={<Navigate to="dashboard" replace />} />
@@ -79,6 +83,11 @@ export default function App() {
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="clients" element={<AdminClients />} />
             <Route path="settings" element={<AdminSettings />} />
+          </Route>
+
+          <Route path="engineer" element={<ProtectedRoute role="engineer" loginPath="/engineer/login"><EngineerLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<EngineerDashboard />} />
           </Route>
 
           <Route path="accountant" element={<ProtectedRoute role="accountant" loginPath="/accountant/login"><AccountantLayout /></ProtectedRoute>}>

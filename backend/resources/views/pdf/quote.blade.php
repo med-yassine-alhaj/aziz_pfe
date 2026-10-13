@@ -25,12 +25,14 @@
         .total-row td { background: #7C3AED; color: white; font-weight: bold; font-size: 14px; padding: 10px; }
         .validity { margin-top: 20px; padding: 12px; background: #FEF3C7; border-radius: 8px; font-size: 11px; color: #92400E; }
         .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #eee; font-size: 10px; color: #999; text-align: center; }
+        .logo { width: 150px; height: auto; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 <div class="page">
     <div class="header">
         <div>
+            <img class="logo" src="{{ public_path('engineerium-logo.png') }}" alt="ENGINEERIUM SARL">
             <div class="agency-name">{{ $settings->agency_name }}</div>
             <div class="agency-info">{{ $settings->address }}</div>
             <div class="agency-info">{{ $settings->email }} | {{ $settings->phone }}</div>
@@ -75,9 +77,9 @@
                     @if($item->description)<br><span style="color:#666;font-size:10px">{{ $item->description }}</span>@endif
                 </td>
                 <td style="text-align:center">{{ $item->quantity }}</td>
-                <td style="text-align:right">{{ number_format($item->unit_price, 2) }} MAD</td>
+                <td style="text-align:right">{{ number_format($item->unit_price, 2) }} TND</td>
                 <td style="text-align:center">{{ $item->tax_rate }}%</td>
-                <td style="text-align:right">{{ number_format($item->total, 2) }} MAD</td>
+                <td style="text-align:right">{{ number_format($item->total, 2) }} TND</td>
             </tr>
             @endforeach
         </tbody>
@@ -85,12 +87,12 @@
 
     <div class="totals">
         <table>
-            <tr><td>Sous-total HT</td><td style="text-align:right">{{ number_format($quote->subtotal, 2) }} MAD</td></tr>
+            <tr><td>Sous-total HT</td><td style="text-align:right">{{ number_format($quote->subtotal, 2) }} TND</td></tr>
             @if($quote->discount_amount > 0)
-            <tr><td>Remise</td><td style="text-align:right">-{{ number_format($quote->discount_amount, 2) }} MAD</td></tr>
+            <tr><td>Remise</td><td style="text-align:right">-{{ number_format($quote->discount_amount, 2) }} TND</td></tr>
             @endif
-            <tr><td>TVA</td><td style="text-align:right">{{ number_format($quote->tax_amount, 2) }} MAD</td></tr>
-            <tr class="total-row"><td>TOTAL TTC</td><td style="text-align:right">{{ number_format($quote->total, 2) }} MAD</td></tr>
+            <tr><td>TVA</td><td style="text-align:right">{{ number_format($quote->tax_amount, 2) }} TND</td></tr>
+            <tr class="total-row"><td>TOTAL TTC</td><td style="text-align:right">{{ number_format($quote->total, 2) }} TND</td></tr>
         </table>
     </div>
 

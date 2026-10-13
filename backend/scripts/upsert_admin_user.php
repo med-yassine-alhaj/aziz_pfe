@@ -9,8 +9,8 @@ $kernel->bootstrap();
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-$name = $argv[1] ?? 'Admin F_MCOM';
-$email = $argv[2] ?? 'admin@fmcom.ma';
+$name = $argv[1] ?? 'Admin ENGINEERIUM SARL';
+$email = $argv[2] ?? 'admin@engineerium.tn';
 $phone = $argv[3] ?? '+212600000001';
 $password = $argv[4] ?? 'Admin@2024';
 

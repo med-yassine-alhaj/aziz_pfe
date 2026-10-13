@@ -10,7 +10,9 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Quote;
 use App\Models\User;
+use App\Models\Project;
 use App\Services\PdfService;
+use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
@@ -37,8 +39,47 @@ class QuoteController extends Controller
     {
         $this->authorize('respond', $quote);
 
-        $quote->update(['status' => 'accepted']);
-        $quote->serviceRequest->update(['status' => 'quote_accepted']);
+        $invoice = DB::transaction(function () use ($quote) {
+            $lockedQuote = Quote::whereKey($quote->id)->lockForUpdate()->firstOrFail();
+            if ($lockedQuote->status !== 'sent') {
+                abort(422, 'Seul un devis envoyé peut être accepté.');
+            }
+            if (Invoice::where('quote_id', $lockedQuote->id)->exists()) {
+                abort(422, 'Une facture existe déjà pour ce devis.');
+            }
+            $lockedQuote->update(['status' => 'accepted']);
+            $lockedQuote->serviceRequest->update(['status' => 'quote_accepted']);
+            $createdInvoice = Invoice::create([
+                'client_id' => $lockedQuote->client_id,
+                'service_request_id' => $lockedQuote->service_request_id,
+                'quote_id' => $lockedQuote->id,
+                'subtotal' => $lockedQuote->subtotal,
+                'discount_amount' => $lockedQuote->discount_amount,
+                'tax_amount' => $lockedQuote->tax_amount,
+                'total' => $lockedQuote->total,
+                'status' => 'waiting_accountant_validation',
+                'notes' => $lockedQuote->notes,
+                'created_by' => auth()->id(),
+            ]);
+            foreach ($lockedQuote->items as $item) {
+                InvoiceItem::create([
+                    'invoice_id' => $createdInvoice->id, 'title' => $item->title,
+                    'description' => $item->description, 'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price, 'tax_rate' => $item->tax_rate,
+                    'discount_amount' => $item->discount_amount, 'order' => $item->order,
+                ]);
+            }
+            $lockedQuote->serviceRequest->update(['status' => 'invoice_generated']);
+            Project::firstOrCreate(
+                ['service_request_id' => $lockedQuote->service_request_id],
+                [
+                    'client_id' => $lockedQuote->client_id,
+                    'name' => $lockedQuote->serviceRequest->title,
+                    'reference' => 'ENG-' . date('Y') . '-' . str_pad((string) $lockedQuote->service_request_id, 5, '0', STR_PAD_LEFT),
+                ]
+            );
+            return $createdInvoice;
+        });
 
         // Notify admins
         $quote->createdBy->notifications()->create([
@@ -49,35 +90,6 @@ class QuoteController extends Controller
         ]);
 
         ActivityLog::record('accepted', 'Quote', $quote->id, 'Devis accepté : ' . $quote->quote_number);
-
-        // Auto-convert to invoice
-        $invoice = Invoice::create([
-            'client_id'          => $quote->client_id,
-            'service_request_id' => $quote->service_request_id,
-            'quote_id'           => $quote->id,
-            'subtotal'           => $quote->subtotal,
-            'discount_amount'    => $quote->discount_amount,
-            'tax_amount'         => $quote->tax_amount,
-            'total'              => $quote->total,
-            'status'             => 'waiting_accountant_validation',
-            'notes'              => $quote->notes,
-            'created_by'         => auth()->id(),
-        ]);
-
-        foreach ($quote->items as $item) {
-            InvoiceItem::create([
-                'invoice_id'      => $invoice->id,
-                'title'           => $item->title,
-                'description'     => $item->description,
-                'quantity'        => $item->quantity,
-                'unit_price'      => $item->unit_price,
-                'tax_rate'        => $item->tax_rate,
-                'discount_amount' => $item->discount_amount,
-                'order'           => $item->order,
-            ]);
-        }
-
-        $quote->serviceRequest->update(['status' => 'invoice_generated']);
 
         // Notify client about invoice
         AppNotification::create([

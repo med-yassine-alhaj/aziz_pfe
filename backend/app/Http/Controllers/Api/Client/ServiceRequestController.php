@@ -46,6 +46,13 @@ class ServiceRequestController extends Controller
             'pack_id'            => $request->pack_id,
             'title'              => $request->title,
             'description'        => $request->description,
+            'building_type'      => $request->building_type,
+            'location'           => $request->location,
+            'approximate_surface'=> $request->approximate_surface,
+            'levels_count'       => $request->levels_count,
+            'intervention_type'  => $request->intervention_type,
+            'requested_mission'  => $request->requested_mission,
+            'available_documents'=> $request->available_documents,
             'approximate_budget' => $request->approximate_budget,
             'desired_deadline'   => $request->desired_deadline,
             'status'             => 'pending',
@@ -53,7 +60,7 @@ class ServiceRequestController extends Controller
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                $path = $file->store('requests/' . $serviceRequest->id, 'public');
+                $path = $file->store('requests/' . $serviceRequest->id, 'local');
                 RequestFile::create([
                     'service_request_id' => $serviceRequest->id,
                     'file_path'          => $path,

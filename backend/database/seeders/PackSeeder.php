@@ -11,62 +11,47 @@ class PackSeeder extends Seeder
 {
     public function run(): void
     {
-        $graphicDesign = Service::where('name', 'Graphic Design')->first();
-        $uiux          = Service::where('name', 'UI/UX Design')->first();
-        $branding      = Service::where('name', 'Branding & Identité')->first();
-        $website       = Service::where('name', 'Site Web')->first();
-        $video         = Service::where('name', 'Montage Vidéo')->first();
-        $communication = Service::where('name', 'Communication Générale')->first();
-        $marketing     = Service::where('name', 'Stratégie Marketing')->first();
-        $stratComm     = Service::where('name', 'Stratégie de Communication')->first();
+        $avantProjet = Service::where('name', 'Avant-projet bâtiment')->first();
+        $structure = Service::where('name', 'Étude de structure')->first();
+        $plans = Service::where('name', 'Plans d’exécution')->first();
+        $chantier = Service::where('name', 'Suivi et coordination de chantier')->first();
+        $ouvrage = Service::where('name', 'Ouvrages d’art')->first();
+        $rehab = Service::where('name', 'Réhabilitation et diagnostic')->first();
 
         $starter = Pack::create([
-            'name'        => 'Pack Starter',
-            'slug'        => 'pack-starter',
-            'description' => 'Idéal pour les TPE et startups souhaitant lancer leur présence digitale avec les essentiels.',
+            'name'        => 'Mission avant-projet',
+            'slug'        => 'mission-avant-projet',
+            'description' => 'Cadrage technique et étude de variantes pour préparer une décision de construction.',
             'badge_label' => 'Sur devis',
             'is_active'   => true,
             'order'       => 1,
         ]);
         $starter->services()->sync(array_filter([
-            $graphicDesign?->id,
-            $branding?->id,
-            $communication?->id,
+            $avantProjet?->id, $rehab?->id,
         ]));
 
         $business = Pack::create([
-            'name'        => 'Pack Business',
-            'slug'        => 'pack-business',
-            'description' => 'Pour les PME qui veulent accélérer leur croissance avec une présence digitale complète et une stratégie solide.',
+            'name'        => 'Mission structure et exécution',
+            'slug'        => 'mission-structure-execution',
+            'description' => 'Étude de structure et plans d’exécution adaptés aux caractéristiques du projet.',
             'badge_label' => 'Sur devis',
             'is_active'   => true,
             'order'       => 2,
         ]);
         $business->services()->sync(array_filter([
-            $graphicDesign?->id,
-            $uiux?->id,
-            $branding?->id,
-            $website?->id,
-            $marketing?->id,
+            $avantProjet?->id, $structure?->id, $plans?->id,
         ]));
 
         $premium = Pack::create([
-            'name'        => 'Pack Premium',
-            'slug'        => 'pack-premium',
-            'description' => 'Solution 360° pour les entreprises ambitieuses. Couvrez tous les aspects de votre communication digitale.',
+            'name'        => 'Mission complète chantier',
+            'slug'        => 'mission-complete-chantier',
+            'description' => 'Accompagnement des études à la coordination et au suivi technique du chantier.',
             'badge_label' => 'Sur devis',
             'is_active'   => true,
             'order'       => 3,
         ]);
         $premium->services()->sync(array_filter([
-            $graphicDesign?->id,
-            $uiux?->id,
-            $branding?->id,
-            $website?->id,
-            $video?->id,
-            $communication?->id,
-            $marketing?->id,
-            $stratComm?->id,
+            $avantProjet?->id, $structure?->id, $plans?->id, $chantier?->id, $ouvrage?->id,
         ]));
     }
 }

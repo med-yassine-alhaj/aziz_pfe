@@ -27,10 +27,8 @@ export default function AdminSidebar() {
     <aside className="fixed left-0 top-0 h-full w-64 bg-dark-nav text-white flex flex-col z-40 hidden lg:flex">
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold text-sm">F</span>
-          </div>
-          <span className="font-bold text-lg">F_MCOM</span>
+          <img src="/engineerium-logo.png" alt="ENGINEERIUM" className="w-10 h-10 object-contain" />
+          <span className="font-bold text-lg">ENGINEERIUM</span>
         </div>
         <p className="text-xs text-gray-400 mt-1">Espace Admin</p>
       </div>

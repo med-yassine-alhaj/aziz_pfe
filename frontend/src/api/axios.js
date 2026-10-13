@@ -5,13 +5,13 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 })
 
-const initialToken = localStorage.getItem('fmcom_token')
+const initialToken = localStorage.getItem('engineerium_token')
 if (initialToken) {
   api.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`
 }
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('fmcom_token')
+  const token = localStorage.getItem('engineerium_token')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
@@ -21,8 +21,8 @@ api.interceptors.response.use(
   (err) => {
     const isLoginRequest = err.config?.url?.endsWith('/login')
     if (err.response?.status === 401 && !isLoginRequest) {
-      localStorage.removeItem('fmcom_token')
-      localStorage.removeItem('fmcom_user')
+      localStorage.removeItem('engineerium_token')
+      localStorage.removeItem('engineerium_user')
       const isAdmin = window.location.pathname.startsWith('/admin')
       window.location.href = isAdmin ? '/admin/login' : '/login'
     }

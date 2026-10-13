@@ -15,10 +15,10 @@ export default function Packs() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="bg-dark-nav text-white py-16 px-4 text-center">
-        <span className="badge-devis mb-4 inline-block">Offres groupées</span>
-        <h1 className="text-4xl font-extrabold">Nos Packs</h1>
+        <span className="badge-devis mb-4 inline-block">Missions personnalisées</span>
+        <h1 className="text-4xl font-extrabold">Missions d’études</h1>
         <p className="text-gray-300 mt-3 max-w-xl mx-auto">
-          Des solutions complètes adaptées à chaque étape de votre développement. Tous sur devis.
+          Un périmètre, des livrables et un délai indicatif définis selon les caractéristiques de votre projet. Prix sur devis.
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export default function Packs() {
 
                 <div className="flex-1">
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                    Services inclus
+                    Périmètre indicatif
                   </h4>
                   <ul className="space-y-3">
                     {pack.services?.map(s => (
@@ -63,8 +63,8 @@ export default function Packs() {
 
                 <div className="mt-8">
                   <div className="bg-primary-light rounded-xl p-4 text-center mb-4">
-                    <p className="text-xs text-primary font-medium">Prix</p>
-                    <p className="text-xl font-extrabold text-primary">{pack.badge_label}</p>
+                    <p className="text-xs text-primary font-medium">Tarification</p>
+                    <p className="text-xl font-extrabold text-primary">Devis personnalisé</p>
                   </div>
                   <Link
                     to="/contact"

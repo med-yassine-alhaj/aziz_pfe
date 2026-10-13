@@ -11,11 +11,14 @@ class ServiceRequest extends Model
 
     protected $fillable = [
         'client_id', 'service_id', 'pack_id', 'title', 'description',
+        'building_type', 'location', 'approximate_surface', 'levels_count',
+        'intervention_type', 'requested_mission', 'available_documents',
         'approximate_budget', 'desired_deadline', 'status', 'assigned_admin_id',
     ];
 
     protected $casts = [
         'desired_deadline' => 'date',
+        'approximate_surface' => 'decimal:2',
     ];
 
     public static array $statuses = [
@@ -70,6 +73,11 @@ class ServiceRequest extends Model
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function project()
+    {
+        return $this->hasOne(Project::class);
     }
 
     public function getStatusLabelAttribute(): string

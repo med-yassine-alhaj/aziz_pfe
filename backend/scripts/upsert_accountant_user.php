@@ -8,8 +8,8 @@ $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-$name = $argv[1] ?? 'Comptable F_MCOM';
-$email = $argv[2] ?? 'comptable@fmcom.ma';
+$name = $argv[1] ?? 'Comptable ENGINEERIUM SARL';
+$email = $argv[2] ?? 'comptable@engineerium.tn';
 $phone = $argv[3] ?? '+212600000002';
 $password = $argv[4] ?? 'Comptable@2024';
 

@@ -17,9 +17,23 @@ export default function AdminChat() {
   const bottomRef = useRef(null)
 
   useEffect(() => {
-    messagesApi.adminGetChat(id)
-      .then(({ data }) => { setData(data); setMessages(data.messages) })
-      .catch(() => toast.error('Erreur chargement.'))
+    let active = true
+    const loadChat = async (notifyOnError = true) => {
+      try {
+        const { data: chat } = await messagesApi.adminGetChat(id)
+        if (!active) return
+        setData(chat)
+        setMessages(chat.messages)
+      } catch {
+        if (notifyOnError) toast.error('Erreur chargement.')
+      }
+    }
+    loadChat()
+    const interval = window.setInterval(() => loadChat(false), 3000)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+    }
   }, [id])
 
   useEffect(() => {
@@ -35,7 +49,7 @@ export default function AdminChat() {
       if (file) fd.append('attachment', file)
       fd.append('is_internal_note', isInternal ? '1' : '0')
       const { data: msg } = await messagesApi.adminSend(id, fd)
-      setMessages(prev => [...prev, msg])
+      setMessages(prev => prev.some(item => item.id === msg.id) ? prev : [...prev, msg])
       setText(''); setFile(null)
     } catch { toast.error('Erreur.') }
     finally { setSending(false) }

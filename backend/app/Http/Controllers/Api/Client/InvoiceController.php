@@ -39,7 +39,7 @@ class InvoiceController extends Controller
     {
         $this->authorize('view', $invoice);
 
-        if (!in_array($invoice->status, ['unpaid'])) {
+        if (!in_array($invoice->status, ['unpaid'], true)) {
             return response()->json(['message' => 'Cette facture ne peut pas être payée.'], 422);
         }
 
@@ -51,7 +51,7 @@ class InvoiceController extends Controller
         $payment = Payment::create([
             'invoice_id'            => $invoice->id,
             'client_id'             => auth()->id(),
-            'amount'                => $invoice->total,
+            'amount'                => max(0, $invoice->total),
             'method'                => $request->method,
             'status'                => 'pending',
             'payment_proof'         => $proofPath,

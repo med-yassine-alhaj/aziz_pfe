@@ -1,88 +1,28 @@
-# F_MCOM — Installation Guide
+# Lancement ENGINEERIUM
 
-## Prérequis
-- PHP >= 8.2
-- Composer
-- Node.js >= 18
-- MySQL 8.0+
+## Backend
 
-## 1. Backend Laravel
-
-```bash
-cd C:\Users\medya\F_MCOM
-composer create-project laravel/laravel backend
-cd backend
-
-# Installer les dépendances
-composer require laravel/sanctum
-composer require laravel/socialite
-composer require barryvdh/laravel-dompdf
-composer require maatwebsite/excel
-composer require league/flysystem-local
-
-# Publier les configs
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-php artisan vendor:publish --provider="Barryvdh\DomPDF\ServiceProvider"
-
-# Copier les fichiers générés dans backend/ (migrations, models, controllers, etc.)
-
-# Configurer .env (copier .env.example → .env)
+```powershell
+cd C:\Users\medya\ENGINEERIUM\backend
+composer install
+copy .env.example .env
 php artisan key:generate
-
-# Migrer et seeder
 php artisan migrate --seed
-
-# Lancer le serveur
+php artisan storage:link
 php artisan serve
 ```
 
-## 2. Frontend React
+## Frontend
 
-```bash
-cd C:\Users\medya\F_MCOM
-npm create vite@latest frontend -- --template react
-cd frontend
-
-# Installer les dépendances
+```powershell
+cd C:\Users\medya\ENGINEERIUM\frontend
 npm install
-npm install axios react-router-dom
-npm install @headlessui/react @heroicons/react
-npm install react-hot-toast
-npm install react-hook-form
-npm install date-fns
-npm install recharts
-
-# Installer Tailwind CSS
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-
-# Copier les fichiers src/ générés
 npm run dev
 ```
 
-Pour lancer chaque portail séparément, ouvrez un terminal dans `frontend/` :
+Le portail public est disponible sur le port Vite configuré. Les portails administrateur et
+comptable utilisent leurs commandes dédiées existantes. Les fichiers techniques sont privés :
+ne pas exposer `storage/app` par un serveur statique.
 
-```bash
-npm run dev              # Client : http://localhost:3000
-npm run dev:accountant   # Comptable : http://localhost:3001 
-npm run dev:admin        # Admin : http://localhost:3002
-```
-
-## 3. Variables d'environnement backend (.env)
-
-```
-APP_NAME=F_MCOM
-APP_URL=http://localhost:8000
-
-DB_DATABASE=fmcom
-DB_USERNAME=root
-DB_PASSWORD=
-
-SANCTUM_STATEFUL_DOMAINS=localhost:3000
-SESSION_DOMAIN=localhost
-FRONTEND_URL=http://localhost:3000
-
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
-```
+Les données de démonstration doivent rester fictives et être signalées comme telles dans tout
+environnement de présentation.

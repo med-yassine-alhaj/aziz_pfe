@@ -23,8 +23,8 @@ class AgencySetting extends Model
     public static function instance(): self
     {
         return static::firstOrCreate([], [
-            'agency_name'     => 'F_MCOM',
-            'email'           => 'contact@fmcom.ma',
+            'agency_name'     => 'ENGINEERIUM SARL',
+            'email'           => 'fradi.hichem@gmail.com',
             'default_tax_rate' => 20.00,
         ]);
     }
