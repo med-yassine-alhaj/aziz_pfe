@@ -25,6 +25,7 @@ cd C:\Users\medya\ENGINEERIUM\frontend
 npm install
 npm run build
 npm run dev
+npm run dev:engineer
 ```
 
 ## Domaine métier
@@ -39,6 +40,8 @@ npm run dev
   statut financier et ses transitions sont historisées.
 - Les documents de projet acceptent PDF, DWG et IFC dans la limite configurable de 50 Mo,
   conservent les versions et ne sont téléchargés qu’après contrôle d’accès.
+- L’administrateur affecte les projets depuis `Projets`. L’ingénieur se connecte au portail
+  dédié avec le rôle `engineer` et ne voit que les projets qui lui sont affectés.
 
 ## Coordonnées
 

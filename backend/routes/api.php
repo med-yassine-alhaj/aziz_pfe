@@ -135,11 +135,15 @@ Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
         Route::get('/admins', fn() => \App\Http\Resources\UserResource::collection(
             \App\Models\User::admins()->get()
         ));
+        Route::get('/engineers', fn() => \App\Http\Resources\UserResource::collection(
+            \App\Models\User::engineers()->where('is_active', true)->orderBy('name')->get()
+        ));
         Route::get('/projects', [ProjectController::class, 'index']);
         Route::get('/projects/{project}', [ProjectController::class, 'show']);
         Route::put('/projects/{project}/stage', [ProjectController::class, 'updateStage']);
         Route::put('/projects/{project}/assign-engineer', [ProjectController::class, 'assignEngineer']);
         Route::post('/projects/{project}/documents', [ProjectController::class, 'storeDocument']);
+        Route::put('/projects/{project}/documents/{document}/state', [ProjectController::class, 'updateDocumentState']);
         Route::get('/projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument']);
     });
 
@@ -148,6 +152,7 @@ Route::middleware(['auth:sanctum', 'ensure.active'])->group(function () {
         Route::get('/projects/{project}', [ProjectController::class, 'show']);
         Route::put('/projects/{project}/stage', [ProjectController::class, 'updateStage']);
         Route::post('/projects/{project}/documents', [ProjectController::class, 'storeDocument']);
+        Route::put('/projects/{project}/documents/{document}/state', [ProjectController::class, 'updateDocumentState']);
         Route::get('/projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument']);
     });
 

@@ -22,6 +22,7 @@ import AccountantLogin from './pages/accountant/AccountantLogin'
 import EngineerLogin from './pages/engineer/EngineerLogin'
 import EngineerLayout from './layouts/EngineerLayout'
 import EngineerDashboard from './pages/engineer/EngineerDashboard'
+import EngineerProjectDetails from './pages/engineer/EngineerProjectDetails'
 
 // Client pages
 import ClientDashboard from './pages/client/ClientDashboard'
@@ -47,6 +48,7 @@ import AdminInvoices from './pages/admin/AdminInvoices'
 import AdminClients from './pages/admin/AdminClients'
 import AdminChat from './pages/admin/AdminChat'
 import AdminSettings from './pages/admin/AdminSettings'
+import AdminProjects from './pages/admin/AdminProjects'
 
 // Accountant pages
 import AccountantDashboard from './pages/accountant/AccountantDashboard'
@@ -83,11 +85,13 @@ export default function App() {
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="clients" element={<AdminClients />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="projects" element={<AdminProjects />} />
           </Route>
 
           <Route path="engineer" element={<ProtectedRoute role="engineer" loginPath="/engineer/login"><EngineerLayout /></ProtectedRoute>}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<EngineerDashboard />} />
+            <Route path="projects/:id" element={<EngineerProjectDetails />} />
           </Route>
 
           <Route path="accountant" element={<ProtectedRoute role="accountant" loginPath="/accountant/login"><AccountantLayout /></ProtectedRoute>}>

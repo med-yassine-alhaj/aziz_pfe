@@ -8,6 +8,7 @@ const links = [
   { to: '/admin/quotes',    label: 'Devis',            icon: '📄' },
   { to: '/admin/invoices',  label: 'Factures',         icon: '🧾' },
   { to: '/admin/clients',   label: 'Clients',          icon: '👥' },
+  { to: '/admin/projects',  label: 'Projets',          icon: '🏗️' },
   { to: '/admin/services',  label: 'Services',         icon: '⚡' },
   { to: '/admin/packs',     label: 'Packs',            icon: '📦' },
   { to: '/admin/settings',  label: 'Paramètres',       icon: '⚙️' },

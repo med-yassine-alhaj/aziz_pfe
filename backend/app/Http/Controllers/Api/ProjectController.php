@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\ProjectDocument;
 use App\Models\ProjectStageHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +36,9 @@ class ProjectController extends Controller
     {
         $this->authorizeProject($project);
         return response()->json(['data' => $project->load([
-            'client', 'responsibleEngineer', 'request', 'documents.uploader', 'stageHistories.user', 'invoices',
+            'client', 'responsibleEngineer',
+            'request.service', 'request.pack', 'request.files',
+            'documents.uploader', 'stageHistories.user', 'invoices',
         ])]);
     }
 
@@ -67,7 +70,7 @@ class ProjectController extends Controller
             'title' => 'Avancement du projet mis à jour',
             'message' => $project->name . ' : ' . $project->stage_label,
             'type' => 'project_stage_updated',
-            'link' => '/client/projects/' . $project->id,
+            'link' => '/client/requests/' . $project->service_request_id,
         ]);
         return $this->show($project->fresh());
     }
@@ -75,7 +78,11 @@ class ProjectController extends Controller
     public function assignEngineer(Request $request, Project $project)
     {
         abort_unless(auth()->user()->isAdmin(), 403);
-        $data = $request->validate(['engineer_id' => ['required', 'exists:users,id']]);
+        $data = $request->validate(['engineer_id' => ['nullable', 'exists:users,id']]);
+        if (!$data['engineer_id']) {
+            $project->update(['responsible_engineer_id' => null]);
+            return response()->json(['data' => $project->fresh(['responsibleEngineer'])]);
+        }
         $engineer = \App\Models\User::whereKey($data['engineer_id'])->where('role', 'engineer')->first();
         if (!$engineer) return response()->json(['message' => 'L’utilisateur sélectionné n’est pas ingénieur.'], 422);
         $project->update(['responsible_engineer_id' => $engineer->id]);
@@ -98,21 +105,45 @@ class ProjectController extends Controller
             'file' => ['required', 'file', 'max:51200', 'mimes:pdf,dwg,ifc'],
         ]);
         $file = $data['file'];
-        $version = ((int) $project->documents()->where('category', $data['category'])->max('version')) + 1;
-        $path = $file->store('projects/' . $project->id, 'local');
-        $document = ProjectDocument::create([
-            'project_id' => $project->id,
-            'uploaded_by' => auth()->id(),
-            'category' => $data['category'],
-            'original_name' => $file->getClientOriginalName(),
-            'path' => $path,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-            'version' => $version,
-            'state' => $data['state'] ?? 'to_review',
-            'observations' => $data['observations'] ?? null,
-        ]);
+        $document = DB::transaction(function () use ($project, $data, $file) {
+            $lockedProject = Project::query()->whereKey($project->id)->lockForUpdate()->firstOrFail();
+            $version = ((int) $lockedProject->documents()
+                ->where('category', $data['category'])
+                ->max('version')) + 1;
+            $path = $file->store('projects/' . $lockedProject->id, 'local');
+
+            return ProjectDocument::create([
+                'project_id' => $lockedProject->id,
+                'uploaded_by' => auth()->id(),
+                'category' => $data['category'],
+                'original_name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'version' => $version,
+                'state' => $data['state'] ?? 'to_review',
+                'observations' => $data['observations'] ?? null,
+            ]);
+        });
         return response()->json(['data' => $document->load('uploader')], 201);
+    }
+
+    public function updateDocumentState(Request $request, Project $project, ProjectDocument $document)
+    {
+        $this->authorizeProject($project, true);
+        abort_unless($document->project_id === $project->id, 404);
+
+        $data = $request->validate([
+            'state' => ['required', Rule::in(['draft', 'to_review', 'validated'])],
+            'observations' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $document->update([
+            'state' => $data['state'],
+            'observations' => $data['observations'] ?? $document->observations,
+        ]);
+
+        return response()->json(['data' => $document->fresh('uploader')]);
     }
 
     public function downloadDocument(Project $project, ProjectDocument $document)

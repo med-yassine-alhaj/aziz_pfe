@@ -8,6 +8,7 @@ export default function AdminLogin() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const engineerPortal = window.location.pathname.startsWith('/engineer')
   const [loading, setLoading] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm()
@@ -25,7 +26,6 @@ export default function AdminLogin() {
     setLoading(true)
     try {
       const user = await login(data)
-      const engineerPortal = window.location.pathname.startsWith('/engineer')
       if (user.role !== (engineerPortal ? 'engineer' : 'admin')) {
         toast.error(engineerPortal ? 'Ce portail est réservé aux ingénieurs.' : 'Ce portail est réservé aux administrateurs.')
         return navigate('/', { replace: true })
@@ -52,11 +52,11 @@ export default function AdminLogin() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email administrateur</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">{engineerPortal ? 'Email ingénieur' : 'Email administrateur'}</label>
               <input
                 type="email"
                 className="input"
-                placeholder="admin@engineerium.tn"
+                placeholder={engineerPortal ? 'ingenieur@engineerium.tn' : 'admin@engineerium.tn'}
                 {...register('email', { required: 'Email requis', pattern: { value: /\S+@\S+\.\S+/, message: 'Email invalide' } })}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -78,12 +78,12 @@ export default function AdminLogin() {
               disabled={loading}
               className="w-full bg-slate-950 text-white font-bold py-3.5 rounded-btn hover:bg-violet-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Connexion...' : 'Entrer dans le portail admin'}
+              {loading ? 'Connexion...' : engineerPortal ? 'Entrer dans le portail ingénieur' : 'Entrer dans le portail administrateur'}
             </button>
           </form>
 
           <p className="text-center text-xs text-slate-500 mt-6">
-            Compte admin séparé du portail client sur le port 3001.
+            {engineerPortal ? 'Portail réservé aux ingénieurs affectés.' : 'Portail réservé aux administrateurs.'}
           </p>
         </div>
       </div>

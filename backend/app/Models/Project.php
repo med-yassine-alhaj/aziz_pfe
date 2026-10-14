@@ -28,6 +28,8 @@ class Project extends Model
         'due_date' => 'date',
     ];
 
+    protected $appends = ['stage_label'];
+
     public function request() { return $this->belongsTo(ServiceRequest::class, 'service_request_id'); }
     public function client() { return $this->belongsTo(User::class, 'client_id'); }
     public function responsibleEngineer() { return $this->belongsTo(User::class, 'responsible_engineer_id'); }

@@ -18,10 +18,14 @@ php artisan serve
 cd C:\Users\medya\ENGINEERIUM\frontend
 npm install
 npm run dev
+npm run dev:admin
+npm run dev:accountant
+npm run dev:engineer
 ```
 
 Le portail public est disponible sur le port Vite configuré. Les portails administrateur et
-comptable utilisent leurs commandes dédiées existantes. Les fichiers techniques sont privés :
+comptable et ingénieur utilisent leurs commandes dédiées. Le portail ingénieur est accessible
+sur `http://127.0.0.1:3003/engineer/login`. Les fichiers techniques sont privés :
 ne pas exposer `storage/app` par un serveur statique.
 
 Les données de démonstration doivent rester fictives et être signalées comme telles dans tout

@@ -8,6 +8,7 @@
     "dev:client": "vite --port 3000 --mode client",
     "dev:admin": "vite --port 3002 --mode admin",
     "dev:accountant": "vite --port 3001 --mode accountant",
+    "dev:engineer": "vite --port 3003 --mode engineer",
     "build": "vite build",
     "preview": "vite preview"
   },

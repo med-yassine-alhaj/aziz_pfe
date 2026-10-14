@@ -7,4 +7,8 @@ export const projectsApi = {
   uploadDocument: (id, data) => api.post(`/engineer/projects/${id}/documents`, data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
+  updateDocumentState: (id, documentId, data) => api.put(`/engineer/projects/${id}/documents/${documentId}/state`, data),
+  downloadDocument: (id, documentId) => api.get(`/engineer/projects/${id}/documents/${documentId}/download`, {
+    responseType: 'blob',
+  }),
 }
